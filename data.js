@@ -9,7 +9,7 @@ const PROFILE = {
   // 홈 화면 (더미)
   headline: "From Data<br>to Deployed<br>AI Services",   // <br> 마다 한 줄, 줄마다 계단식으로 들여쓰기
   stats: [
-    ["3", "End-to-end AI projects"],
+    ["1", "End-to-end AI project"],
   ],
   buttons: [
     ["Resume", "resume.pdf"],
