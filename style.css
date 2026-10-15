@@ -605,3 +605,9 @@ ol.al-list { list-style: decimal; }
   .aloop dl > div { grid-template-columns: 1fr; gap: 2px; }
 }
 @media (prefers-reduced-motion: reduce) { .arc-body { transition: none; } }
+
+/* 홈 맨 아래 띠: 오른쪽 칸에 GitHub · Archive · Email */
+.hero-strip .strip-link { display: flex; flex-direction: column; min-width: 0; white-space: nowrap; }
+.hero-strip .strip-link:last-child { justify-self: end; align-items: flex-end; text-align: right; }
+.hero-strip .strip-link span { transition: color .2s; }
+.hero-strip .strip-link:hover span, .hero-strip .strip-link:hover b { color: var(--accent); }

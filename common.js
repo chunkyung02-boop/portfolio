@@ -637,6 +637,12 @@ if (current === "home") {
   }
   let statsHTML = `<div class="stat-lead"><b>${PROFILE.nameEn}</b><span>${PROFILE.role}</span></div>`;
   for (const [value, label] of PROFILE.stats) statsHTML += `<div><b>${value}</b><span>${label}</span></div>`;
+  // 오른쪽 빈 칸: GitHub · Archive · Email 만 (기본 링크)
+  const ghText = PROFILE.github.split("/").pop();
+  const arText = PAGES.archive.replace(/\/$/, "").split("/").pop();
+  statsHTML += `<a class="strip-link" href="${PROFILE.github}" target="_blank" rel="noopener"><b>GitHub</b><span>${ghText}</span></a>`;
+  statsHTML += `<a class="strip-link" href="${PAGES.archive}" target="_blank" rel="noopener"><b>Archive</b><span>${arText}</span></a>`;
+  statsHTML += `<a class="strip-link" href="mailto:${PROFILE.email}"><b>Email</b><span>${PROFILE.email}</span></a>`;
   const [btnLabel, btnUrl] = PROFILE.buttons[0];
 
   main.innerHTML = `
