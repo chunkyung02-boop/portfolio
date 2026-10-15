@@ -1099,45 +1099,6 @@ const DATA = {
   },
 };
 
-// ★ Archive: 본문은 별도 사이트(https://chunkyung02-boop.github.io/dev-archive/)에 있고, 여기는 메뉴에 보일 제목만 둡니다
-DATA.archive = {
- "label": "Archive",
- "eyebrow": "Dev Archive · 문제 · 판단 · 결과 기록",
- "desc": "프로젝트와 도구를 만들며 마주친 문제, 그때 내린 판단, 결과를 그대로 기록한 아카이브입니다.",
- "aurora": [
-  "#1b1740",
-  "#2b2550",
-  "#7a5af0",
-  "#a18cf0"
- ],
- "items": [
-  {
-   "id": "tiniping",
-   "title": "티니핑 판별기 — 비전 모델 활용 프로젝트"
-  },
-  {
-   "id": "collect-tool",
-   "title": "이미지 데이터 수집 툴"
-  },
-  {
-   "id": "project-library",
-   "title": "Project Library"
-  },
-  {
-   "id": "claude-pet",
-   "title": "Claude Pet"
-  },
-  {
-   "id": "ppt-lecture",
-   "title": "LLM 기반 PPT 제작 강의"
-  },
-  {
-   "id": "nolda-analysis",
-   "title": "데이터 분석 프로젝트 — NOLDA"
-  }
- ]
-};
-
 // ★ 프로젝트 상세 페이지 목차 — 위에서부터 순서대로 섹션이 생깁니다
 //   type: overview(기간·팀·역할·기술) · text(문단) · list(항목) · stats(큰 숫자) · flow(단계 흐름)
 //         bars(막대 그래프) · table(비교표) · arch(구조도) · branch(판정 규칙) · stories(고민 사례) · results · links

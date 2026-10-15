@@ -1,5 +1,5 @@
 // 메뉴/페이지를 data.js 내용으로 자동 생성
-const PAGES = { portfolio: "portfolio.html", experience: "experience.html", models: "models.html", more: "more.html", archive: "https://chunkyung02-boop.github.io/dev-archive/" };
+const PAGES = { portfolio: "portfolio.html", experience: "experience.html", models: "models.html", more: "more.html" };
 const current = document.body.dataset.page;
 
 // 3-A) Archive: 다크 모드 · 글마다 펼쳐 보는 기록 (Dev Archive 내보내기)
@@ -637,11 +637,9 @@ if (current === "home") {
   }
   let statsHTML = `<div class="stat-lead"><b>${PROFILE.nameEn}</b><span>${PROFILE.role}</span></div>`;
   for (const [value, label] of PROFILE.stats) statsHTML += `<div><b>${value}</b><span>${label}</span></div>`;
-  // 오른쪽 빈 칸: GitHub · Archive · Email 만 (기본 링크)
+  // 오른쪽 빈 칸: GitHub · Email 만 (기본 링크)
   const ghText = PROFILE.github.split("/").pop();
-  const arText = PAGES.archive.replace(/\/$/, "").split("/").pop();
   statsHTML += `<a class="strip-link" href="${PROFILE.github}" target="_blank" rel="noopener"><b>GitHub</b><span>${ghText}</span></a>`;
-  statsHTML += `<a class="strip-link" href="${PAGES.archive}" target="_blank" rel="noopener"><b>Archive</b><span>${arText}</span></a>`;
   statsHTML += `<a class="strip-link" href="mailto:${PROFILE.email}"><b>Email</b><span>${PROFILE.email}</span></a>`;
   const [btnLabel, btnUrl] = PROFILE.buttons[0];
 
