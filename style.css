@@ -617,6 +617,3 @@ ol.al-list { list-style: decimal; }
 .hero-strip .strip-link:last-child { grid-column: 6; }
 
 
-/* ---------- 배경: 고정 노이즈 층 (그라데이션 캔버스 위, 움직이지 않음) ---------- */
-.bg::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background-image: var(--grain); background-size: 256px 256px; }
-.bg::after { z-index: 2; }

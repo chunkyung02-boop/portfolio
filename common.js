@@ -71,13 +71,19 @@ const sec = current === "project" ? DATA.portfolio : DATA[current];   // 홈이�
 const bandColors = sec ? sec.aurora : PROFILE.aurora;
 document.body.insertAdjacentHTML("afterbegin", `<div class="bg"><canvas class="bg-canvas"></canvas></div>`);
 
-// 움직이는 그라데이션: 낮은 해상도 캔버스에 색 띠를 물결 모양으로 매 프레임 그리고 CSS로 늘려 보여줌.
-// 노이즈(입자)는 따로 한 번만 만들어 고정 → 그라데이션만 잔잔히 흐르고 색도 조금씩 바뀜
+// 움직이는 그라데이션 + 고정 입자
+//  · 색 띠(그라데이션)는 작은 캔버스에 물결 모양으로 매 프레임 그리고 → 화면 크기로 늘려 옮김
+//  · 입자(그레인)는 원래 방식 그대로(진한 색일수록 강하게) 쓰되, 무작위 값을 한 번만 만들어 두고
+//    프레임마다 같은 값을 얹음 → 입자는 제자리에서 움직이지 않음
 const bgCanvas = document.querySelector(".bg-canvas");
-const bgCtx = bgCanvas.getContext("2d");
-const BG_SCALE = 0.25;      // 화면의 1/4 크기로 그림 (부드러운 그라데이션이라 충분, 가벼움)
+const bgCtx = bgCanvas.getContext("2d", { willReadFrequently: true });
+const lowCanvas = document.createElement("canvas");
+const lowCtx = lowCanvas.getContext("2d");
+const LOW_SCALE = 0.25;     // 그라데이션은 화면의 1/4 크기로 그림 (부드러워서 충분)
+const GRAIN = 16;           // 입자 세기 (0 = 없음 · 30 이상 = 거칠게) — 원래 값 그대로
 const HUE_SWING = 16;       // 색이 오가는 폭 (도) — 클수록 색이 많이 바뀜
 const WAVE_SPEED = 0.35;    // 물결 속도 — 작을수록 잔잔함
+let noise = new Int8Array(0);   // 고정 무작위 값 (픽셀마다 하나)
 
 function hexToHsl(hex) {
   const n = parseInt(hex.slice(1), 16);
@@ -99,69 +105,82 @@ const baseHsl = bandColors.map(hexToHsl);
 
 const BANDS = [
   { y: -0.05, height: 0.38, angle: -10, alpha: 0.32, ph: 0 },
-  { y: 0.22, height: 0.56, angle: -16, alpha: 0.7, ph: 2.1 },
+  { y: 0.22, height: 0.56, angle: -16, alpha: 0.7, ph: 2.1 },   // alpha = 색 진하기 (낮을수록 밝음)
 ];
 
 function sizeBackground() {
-  bgCanvas.width = Math.max(2, Math.ceil(bgCanvas.clientWidth * BG_SCALE));
-  bgCanvas.height = Math.max(2, Math.ceil(bgCanvas.clientHeight * BG_SCALE));
+  const w = bgCanvas.clientWidth, h = bgCanvas.clientHeight;
+  bgCanvas.width = w;
+  bgCanvas.height = h;
+  lowCanvas.width = Math.max(2, Math.ceil(w * LOW_SCALE));
+  lowCanvas.height = Math.max(2, Math.ceil(h * LOW_SCALE));
+  noise = new Int8Array(w * h);
+  for (let i = 0; i < noise.length; i += 1) {
+    noise[i] = Math.round((Math.random() + Math.random() - 1) * 127);   // 가운데 값이 많은 고운 입자
+  }
 }
 
-function paintBackground(sec) {
-  const w = bgCanvas.width, h = bgCanvas.height;
-  bgCtx.filter = "none";
-  bgCtx.globalAlpha = 1;
-  bgCtx.fillStyle = "#fbfaf8";
-  bgCtx.fillRect(0, 0, w, h);
-  bgCtx.filter = `blur(${Math.round(55 * BG_SCALE)}px) saturate(1.3)`;
+function paintGradient(sec) {
+  const w = lowCanvas.width, h = lowCanvas.height;
+  lowCtx.filter = "none";
+  lowCtx.globalAlpha = 1;
+  lowCtx.fillStyle = "#fbfaf8";   // 바탕 미색
+  lowCtx.fillRect(0, 0, w, h);
+  lowCtx.filter = `blur(${Math.round(55 * LOW_SCALE)}px) saturate(1.3)`;   // 번지게 + 채도 30% 올려 맑게
   const t = sec * WAVE_SPEED;
   for (const b of BANDS) {
-    bgCtx.save();
-    bgCtx.globalAlpha = b.alpha;
-    bgCtx.translate(w / 2, h * (b.y + b.height / 2));
-    bgCtx.rotate(b.angle * Math.PI / 180);
+    lowCtx.save();
+    lowCtx.globalAlpha = b.alpha;
+    lowCtx.translate(w / 2, h * (b.y + b.height / 2));
+    lowCtx.rotate(b.angle * Math.PI / 180);
     const bw = w * 1.7, bh = h * b.height;
-    const g = bgCtx.createLinearGradient(-bw / 2, 0, bw / 2, 0);
+    const g = lowCtx.createLinearGradient(-bw / 2, 0, bw / 2, 0);
     let i = 0;
     for (const [hue, s, l] of baseHsl) {
       const shift = HUE_SWING * Math.sin(t * 0.5 + i * 1.1 + b.ph);   // 색마다 조금씩 다르게 오감
       g.addColorStop(i / (baseHsl.length - 1), `hsl(${hue + shift} ${s}% ${l}%)`);
       i += 1;
     }
-    bgCtx.fillStyle = g;
+    lowCtx.fillStyle = g;
     // 위·아래 가장자리를 물결 모양으로
     const amp = bh * 0.22;
     const step = bw / 24;
-    bgCtx.beginPath();
+    lowCtx.beginPath();
     for (let x = -bw / 2, k = 0; k <= 24; x += step, k += 1) {
       const y = -bh / 2 + amp * Math.sin(k * 0.55 + t + b.ph);
-      if (k === 0) bgCtx.moveTo(x, y); else bgCtx.lineTo(x, y);
+      if (k === 0) lowCtx.moveTo(x, y); else lowCtx.lineTo(x, y);
     }
     for (let x = bw / 2, k = 24; k >= 0; x -= step, k -= 1) {
       const y = bh / 2 + amp * Math.sin(k * 0.45 - t * 0.8 + b.ph + 1.3);
-      bgCtx.lineTo(x, y);
+      lowCtx.lineTo(x, y);
     }
-    bgCtx.closePath();
-    bgCtx.fill();
-    bgCtx.restore();
+    lowCtx.closePath();
+    lowCtx.fill();
+    lowCtx.restore();
   }
-  bgCtx.filter = "none";
+  lowCtx.filter = "none";
 }
 
-// 고정 노이즈: 한 번만 만든 작은 타일을 배경 위에 반복해서 깖 (움직이지 않음)
-(function makeGrain() {
-  const tile = document.createElement("canvas");
-  tile.width = tile.height = 256;
-  const tctx = tile.getContext("2d");
-  const img = tctx.createImageData(256, 256);
-  for (let i = 0; i < img.data.length; i += 4) {
-    const v = Math.random() < 0.5 ? 0 : 255;
-    img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
-    img.data[i + 3] = Math.random() * 22;
+function paintBackground(sec) {
+  paintGradient(sec);
+  const w = bgCanvas.width, h = bgCanvas.height;
+  bgCtx.imageSmoothingEnabled = true;
+  bgCtx.drawImage(lowCanvas, 0, 0, w, h);
+  // 필름 입자: 진한 색일수록 입자가 강하고, 밝은 곳은 약하게 (원래 방식, 값만 고정)
+  const img = bgCtx.getImageData(0, 0, w, h);
+  const px = img.data;
+  let k = 0;
+  for (let i = 0; i < px.length; i += 4) {
+    const light = (px[i] + px[i + 1] + px[i + 2]) / 765;          // 0(어두움) ~ 1(밝음)
+    const amount = GRAIN * (0.25 + 0.75 * (1 - light) * 1.6);     // 밝을수록 약하게
+    const n = (noise[k] / 127) * amount;
+    px[i] += n;
+    px[i + 1] += n;
+    px[i + 2] += n;
+    k += 1;
   }
-  tctx.putImageData(img, 0, 0);
-  document.querySelector(".bg").style.setProperty("--grain", `url(${tile.toDataURL()})`);
-})();
+  bgCtx.putImageData(img, 0, 0);
+}
 
 sizeBackground();
 paintBackground(0);
@@ -169,7 +188,7 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").match
 if (!reduceMotion) {
   let last = 0;
   const loop = (now) => {
-    if (now - last > 33) {          // 약 30프레임
+    if (now - last > 50) {          // 약 20프레임 (입자까지 매번 얹으므로 가볍게)
       last = now;
       paintBackground(now / 1000);
     }
@@ -178,11 +197,11 @@ if (!reduceMotion) {
   requestAnimationFrame(loop);
 }
 
-// 창 크기가 바뀌면 캔버스 크기만 다시 맞춤
+// 창 크기가 바뀌면 크기에 맞춰 다시 (잠깐 멈췄을 때 한 번만)
 let resizeTimer = 0;
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => { sizeBackground(); paintBackground(performance.now() / 1000); }, 150);
+  resizeTimer = setTimeout(() => { sizeBackground(); paintBackground(performance.now() / 1000); }, 200);
 });
 
 // 1) 상단 메뉴 + 호버 시 펼쳐지는 미리보기 목록 (모든 페이지에서 위치·크기 동일)
