@@ -600,7 +600,7 @@ function projectHTML(it, n, prev, next) {
       <h1 class="mask"><span>${it.title}</span></h1>
       <p class="reveal">${it.summary || ""}</p>
     </section>
-    <figure class="wrap detail-cover reveal"><img src="${it.thumb}" alt="${it.title}"></figure>
+    <figure class="wrap detail-cover reveal"><img src="${it.cover || it.thumb}" alt="${it.title}"${it.cover ? ' style="max-height:none"' : ""}></figure>
     ${detail.steps ? `
     <section class="wrap detail-row">
       <h2 class="group-title reveal">Overview</h2>

@@ -35,6 +35,7 @@ const DATA = {
         id: "nolda",
         title: "NOLDA 놀다",
         thumb: "images/nolda_app.png",        // 앱 홈 화면 (frontend/dist 로컬 실행 캡처)
+        cover: "images/nolda_cover.jpg",      // 상세 페이지 맨 위 가로 이미지 (발표 슬라이드 "AI 여가 설계 서비스 놀다")
         period: "2026.08 – 09.19 · 팀 프로젝트",
         tags: ["FastAPI", "React", "GPT-5 mini", "Supabase", "Vercel · Render"],
         summary: "사진·유튜브 기록으로 취향을 읽고, 고른 시간에 딱 맞는 마포구 여가 코스를 AI가 짜 주는 웹앱",
