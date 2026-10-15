@@ -63,7 +63,7 @@ const DATA = {
           ],
           results: [["4개", "AI 추천 코스 (약 10~15초)"], ["10개", "마포구 실제 장소 기본 코스"], ["30일", "로그인 유지 (카카오 · 구글)"]],
           arch: "",
-          links: [["배포된 앱", "https://frontend-sigma-one-39.vercel.app/"], ["GitHub", "https://github.com/nolda-app/nolda"], ["최종 발표", ""]],
+          links: [["배포된 앱", "https://nolda-space.vercel.app/"], ["GitHub", "https://github.com/nolda-app/nolda"], ["최종 발표", ""]],
         },
         link: "",   // Vercel 배포 주소가 현재 404 (DEPLOYMENT_NOT_FOUND) — 재배포 후 주소 넣기
       },
