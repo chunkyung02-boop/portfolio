@@ -7,7 +7,8 @@ const PROFILE = {
   intro: "파이썬과 딥러닝으로 문제를 풀고, AI Agent로 서비스를 만드는 것을 목표로 공부하고 있습니다.",
   aurora: ["#5b7cf0", "#a18cf0", "#f29ac0", "#f7b08a", "#f08c5a"],   // 홈 배경 색 (왼→오른쪽 순서) — 반대색(파랑↔주황)이 바로 붙지 않게 사이에 다리 색을 넣음
   // 홈 화면 (더미)
-  headline: "From Data<br>to Deployed<br>AI Services",   // <br> 마다 한 줄, 줄마다 계단식으로 들여쓰기
+  headline: "From Data<br>to Deployed<br>AI Services",
+  tagline: "AI is my tool, not my brain.<br>I try fast, think for myself, and ship what works.",   // 제목 아래 보조 문구   // <br> 마다 한 줄, 줄마다 계단식으로 들여쓰기
   stats: [
     ["1", "End-to-end AI project"],
   ],

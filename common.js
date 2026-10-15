@@ -720,6 +720,7 @@ if (current === "home") {
     <section class="hero">
       <div class="hero-center">
         <h1 class="hero-title">${lines}</h1>
+        <p class="hero-sub reveal">${PROFILE.tagline}</p>
         <a class="pill reveal" href="${btnUrl}" target="_blank">${btnLabel} <span>↗</span></a>
       </div>
       <div class="hero-strip reveal">
