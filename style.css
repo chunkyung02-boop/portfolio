@@ -613,6 +613,7 @@ ol.al-list { list-style: decimal; }
 .hero-strip .strip-link:hover span, .hero-strip .strip-link:hover b { color: var(--accent); }
 
 /* 숫자 칸이 줄어도 링크 3개는 메뉴 칸(5·6·7)에 고정 */
+.hero-strip .strip-link:nth-last-child(3) { grid-column: 4; }
 .hero-strip .strip-link:nth-last-child(2) { grid-column: 5; }
 .hero-strip .strip-link:last-child { grid-column: 6; }
 

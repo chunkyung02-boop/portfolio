@@ -18,6 +18,7 @@ const PROFILE = {
   ],
   email: "chunkyung02@gmail.com",
   github: "https://github.com/chunkyung02-boop",
+  blog: "https://chunkyung02-boop.github.io/dev-archive/",   // 홈 하단 띠의 Blog 링크 (Dev Archive)
 };
 
 const DATA = {
