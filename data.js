@@ -100,7 +100,7 @@ const DATA = {
           ],
           results: [["98.8%", "68종 정확도 (시험 1,360장)"], ["99.84%", "바로 답할 때 정확도 (사진의 93%)"], ["21분", "자동 재학습 한 바퀴"], ["37ms", "서버 처리 시간 (느린 5%도 122ms)"]],
           arch: "",
-          links: [["시연 영상", ""], ["최종 발표", ""], ["GitHub", ""]],
+          links: [["시연 영상", ""], ["최종 발표", ""], ["GitHub", "https://github.com/chunkyung02-boop/tinyping-character-recognition"]],
         },
         link: "",
       },
