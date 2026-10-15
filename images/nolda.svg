@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6c9b0"/>
+      <stop offset=".45" stop-color="#f3a98f"/>
+      <stop offset=".75" stop-color="#d98a9a"/>
+      <stop offset="1" stop-color="#8f6f9e"/>
+    </linearGradient>
+    <radialGradient id="sun" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#fff6e6"/>
+      <stop offset=".6" stop-color="#ffe2c2" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#ffd0a8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#sky)"/>
+  <circle cx="300" cy="360" r="170" fill="url(#sun)"/>
+  <!-- 언덕 -->
+  <path d="M0 560 C150 500 260 540 360 520 S540 470 600 500 V900 H0Z" fill="#c97f8a" opacity=".55"/>
+  <path d="M0 620 C120 580 230 610 330 600 S520 560 600 590 V900 H0Z" fill="#a8708f" opacity=".7"/>
+  <path d="M0 690 C140 660 260 690 380 675 S540 650 600 665 V900 H0Z" fill="#6f5878"/>
+  <!-- 예산 → 목적 → 활동 → 만족, 점선 여정 -->
+  <path d="M90 640 C180 600 250 650 330 610 S470 560 520 590" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="2 9" stroke-linecap="round" opacity=".85"/>
+  <g fill="#fff">
+    <circle cx="90" cy="640" r="5"/><circle cx="330" cy="610" r="5"/><circle cx="520" cy="590" r="5"/>
+  </g>
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#fff" text-anchor="middle">
+    <text x="300" y="96" font-size="15" letter-spacing="6" opacity=".9">AN AI LEISURE COURSE SERVICE</text>
+    <text x="300" y="232" font-size="104" letter-spacing="14" font-weight="300">NOLDA</text>
+  </g>
+  <g font-family="'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif" fill="#fff" text-anchor="middle">
+    <text x="300" y="272" font-size="20" letter-spacing="10" opacity=".95">놀 다</text>
+    <text x="300" y="770" font-size="22" font-weight="300">세상에 놀거리는 다양하니까.</text>
+    <text x="300" y="812" font-size="11" letter-spacing="2" opacity=".8">취향 분석 · AI 코스 설계 · 실제 도보 경로 · 서울 마포구</text>
+    <text x="300" y="836" font-size="11" letter-spacing="2" opacity=".8">FastAPI · React · GPT-5 mini · Vercel + Render 배포</text>
+    <text x="300" y="872" font-size="13" letter-spacing="5" font-family="Georgia, serif">2026</text>
+  </g>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe3f1"/>
+      <stop offset=".5" stop-color="#f4c8ec"/>
+      <stop offset="1" stop-color="#c9b8f2"/>
+    </linearGradient>
+    <linearGradient id="gem" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset=".35" stop-color="#ff9fcf"/>
+      <stop offset="1" stop-color="#b56be0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#fff" stop-opacity=".95"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#bg)"/>
+  <circle cx="300" cy="430" r="230" fill="url(#glow)"/>
+  <!-- 하트 보석 -->
+  <path d="M300 560 C210 490 170 440 170 385 C170 335 210 300 255 300 C278 300 293 312 300 326 C307 312 322 300 345 300 C390 300 430 335 430 385 C430 440 390 490 300 560Z" fill="url(#gem)" stroke="#fff" stroke-width="3"/>
+  <path d="M215 370 C222 340 245 325 268 330" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".85"/>
+  <!-- 분류 박스(바운딩 박스) 느낌 -->
+  <g fill="none" stroke="#7a4fb5" stroke-width="2.5" opacity=".7">
+    <path d="M140 280 v-30 h30"/><path d="M460 280 v-30 h-30"/>
+    <path d="M140 600 v30 h30"/><path d="M460 600 v30 h-30"/>
+  </g>
+  <g font-family="'Malgun Gothic', sans-serif" font-size="12" fill="#7a4fb5" letter-spacing="1">
+    <text x="146" y="243">68 classes · 97.7%</text>
+  </g>
+  <!-- 반짝이 -->
+  <g fill="#fff">
+    <path d="M100 160 l6 18 18 6 -18 6 -6 18 -6 -18 -18 -6 18 -6z"/>
+    <path d="M500 200 l4 12 12 4 -12 4 -4 12 -4 -12 -12 -4 12 -4z"/>
+    <path d="M480 640 l5 15 15 5 -15 5 -5 15 -5 -15 -15 -5 15 -5z"/>
+    <circle cx="130" cy="560" r="4"/><circle cx="520" cy="420" r="3"/><circle cx="90" cy="420" r="3"/>
+  </g>
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#5b3a8c" text-anchor="middle">
+    <text x="300" y="96" font-size="14" letter-spacing="6">A DEEP LEARNING VISION PROJECT</text>
+    <text x="300" y="176" font-size="62" letter-spacing="8" font-weight="300">TINIPING</text>
+  </g>
+  <g font-family="'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif" fill="#5b3a8c" text-anchor="middle">
+    <text x="300" y="212" font-size="18" letter-spacing="10">티 니 핑 판 별 기</text>
+    <text x="300" y="712" font-size="22">이거, 어떤 티니핑이야?</text>
+    <text x="300" y="812" font-size="11" letter-spacing="2" opacity=".85">수집 툴 · SigLIP 2 미세조정 · LDA·kNN · 자동 재학습</text>
+    <text x="300" y="836" font-size="11" letter-spacing="2" opacity=".85">사진 한 장으로 68종 판별 · Docker · Supabase</text>
+    <text x="300" y="872" font-size="13" letter-spacing="5" font-family="Georgia, serif">2026</text>
+  </g>
+</svg>
