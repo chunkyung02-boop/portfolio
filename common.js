@@ -1,6 +1,68 @@
 // 메뉴/페이지를 data.js 내용으로 자동 생성
-const PAGES = { portfolio: "portfolio.html", experience: "experience.html", models: "models.html", more: "more.html" };
+const PAGES = { portfolio: "portfolio.html", experience: "experience.html", models: "models.html", more: "more.html", archive: "archive.html" };
 const current = document.body.dataset.page;
+
+// 3-A) Archive: 다크 모드 · 글마다 펼쳐 보는 기록 (Dev Archive 내보내기)
+function escA(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function brA(s) { return escA(s).replace(/\n/g, "<br>"); }
+function arcBlockHTML(b) {
+  if (b.t === "field") return `<div class="af"><b>${escA(b.label)}</b><p>${brA(b.text)}</p></div>`;
+  if (b.t === "p") return `<p class="ap">${brA(b.text)}</p>`;
+  if (b.t === "ol" || b.t === "ul") {
+    let li = "";
+    for (const t of b.items) li += `<li>${brA(t)}</li>`;
+    return `<${b.t} class="al-list">${li}</${b.t}>`;
+  }
+  if (b.t === "table") {
+    let th = "";
+    for (const h of b.head) th += `<th>${brA(h)}</th>`;
+    let tr = "";
+    for (const r of b.rows) {
+      let td = "";
+      for (const cell of r) td += `<td>${brA(cell)}</td>`;
+      tr += `<tr>${td}</tr>`;
+    }
+    return `<div class="at-wrap"><table class="at"><thead><tr>${th}</tr></thead><tbody>${tr}</tbody></table></div>`;
+  }
+  if (b.t === "loop") {
+    let dl = "";
+    for (const [k, v] of b.pairs) dl += `<div><dt>${escA(k)}</dt><dd>${brA(v)}</dd></div>`;
+    return `<div class="aloop"><span>${escA(b.label)}</span><dl>${dl}</dl></div>`;
+  }
+  return "";
+}
+function archiveHTML(sec) {
+  let rows = "";
+  let n = 1;
+  for (const it of sec.items) {
+    let body = it.note ? `<p class="anote">${escA(it.note)}</p>` : "";
+    for (const s of it.sections) {
+      let inner = "";
+      for (const b of s.blocks) inner += arcBlockHTML(b);
+      body += `<section class="asec"><h4>${escA(s.title)}</h4><div>${inner}</div></section>`;
+    }
+    let tags = "";
+    for (const t of it.tags) tags += `<span>#${escA(t)}</span>`;
+    rows += `
+      <article class="arc reveal" id="${it.id}">
+        <button class="arc-head" type="button" aria-expanded="false">
+          <span class="arc-meta"><i>${String(n).padStart(2, "0")}</i><span>${escA(it.date)}</span><span>${escA(it.type)}</span><em>${escA(it.status)}</em></span>
+          <span class="arc-main"><h3>${escA(it.title)}</h3><p>${brA(it.summary)}</p><span class="arc-tags">${tags}</span></span>
+          <span class="arc-plus" aria-hidden="true"></span>
+        </button>
+        <div class="arc-body"><div class="arc-body-in">${body}</div></div>
+      </article>`;
+    n += 1;
+  }
+  return `
+    <section class="page-head wrap">
+      <p class="eyebrow reveal">${sec.eyebrow}</p>
+      <h1 class="mask"><span>${sec.label}</span></h1>
+      <p class="reveal">${sec.desc}</p>
+    </section>
+    <section class="wrap arcs">${rows}</section>`;
+}
+
 const sec = current === "project" ? DATA.portfolio : DATA[current];   // 홈이면 undefined, 프로젝트 상세는 포트폴리오 정보 사용
 
 // 0) 배경: 대각선 색 띠 + 색 속에 섞인 필름 입자 (그레이니 그라데이션)
@@ -500,6 +562,21 @@ if (current === "project") {
   const it = list[found];
   document.title = `${it.title} | Portfolio`;
   main.innerHTML = projectHTML(it, found + 1, list[found - 1], list[found + 1]);
+} else if (current === "archive") {
+  main.innerHTML = archiveHTML(sec);
+  const arcs = document.querySelectorAll(".arc");
+  for (const el of arcs) {
+    el.querySelector(".arc-head").addEventListener("click", () => {
+      const open = el.classList.toggle("open");
+      el.querySelector(".arc-head").setAttribute("aria-expanded", open);
+    });
+  }
+  const hashEl = location.hash ? document.querySelector(location.hash) : null;
+  const first = hashEl && hashEl.classList.contains("arc") ? hashEl : arcs[0];
+  if (first) {
+    first.classList.add("open");
+    first.querySelector(".arc-head").setAttribute("aria-expanded", "true");
+  }
 } else if (sec) {
   let body = "";
 
@@ -693,3 +770,10 @@ if (zoomLinks.length) {
     if (e.key === "Escape") closeZoom();
   });
 }
+
+// 9) 라이트 ↔ 다크 이동할 때만 전환을 천천히 (Archive 로 들어가거나 나올 때)
+window.addEventListener("pageswap", (e) => {
+  if (!e.viewTransition || !e.activation || !e.activation.entry) return;
+  const to = new URL(e.activation.entry.url).pathname;
+  if (to.endsWith("archive.html") !== (current === "archive")) e.viewTransition.types.add("theme");
+});
