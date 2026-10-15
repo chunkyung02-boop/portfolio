@@ -1,5 +1,5 @@
 // 메뉴/페이지를 data.js 내용으로 자동 생성
-const PAGES = { portfolio: "portfolio.html", experience: "experience.html", models: "models.html", more: "more.html", archive: "archive.html" };
+const PAGES = { portfolio: "portfolio.html", experience: "experience.html", models: "models.html", more: "more.html", archive: "https://chunkyung02-boop.github.io/dev-archive/" };
 const current = document.body.dataset.page;
 
 // 3-A) Archive: 다크 모드 · 글마다 펼쳐 보는 기록 (Dev Archive 내보내기)
