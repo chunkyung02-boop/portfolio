@@ -71,65 +71,118 @@ const sec = current === "project" ? DATA.portfolio : DATA[current];   // 홈이�
 const bandColors = sec ? sec.aurora : PROFILE.aurora;
 document.body.insertAdjacentHTML("afterbegin", `<div class="bg"><canvas class="bg-canvas"></canvas></div>`);
 
-const GRAIN = 16;   // 입자 세기 (0 = 없음 · 30 이상 = 거칠게)
+// 움직이는 그라데이션: 낮은 해상도 캔버스에 색 띠를 물결 모양으로 매 프레임 그리고 CSS로 늘려 보여줌.
+// 노이즈(입자)는 따로 한 번만 만들어 고정 → 그라데이션만 잔잔히 흐르고 색도 조금씩 바뀜
+const bgCanvas = document.querySelector(".bg-canvas");
+const bgCtx = bgCanvas.getContext("2d");
+const BG_SCALE = 0.25;      // 화면의 1/4 크기로 그림 (부드러운 그라데이션이라 충분, 가벼움)
+const HUE_SWING = 16;       // 색이 오가는 폭 (도) — 클수록 색이 많이 바뀜
+const WAVE_SPEED = 0.35;    // 물결 속도 — 작을수록 잔잔함
 
-function drawBackground() {
-  const canvas = document.querySelector(".bg-canvas");
-  const w = canvas.clientWidth;
-  const h = canvas.clientHeight;
-  canvas.width = w;
-  canvas.height = h;
-  const ctx = canvas.getContext("2d");
-
-  // 바탕 미색
-  ctx.fillStyle = "#fbfaf8";
-  ctx.fillRect(0, 0, w, h);
-
-  // 비스듬한 색 띠 2개 (위쪽 옅은 띠 + 가운데 진한 띠) — 흐리게 번지도록 blur
-  const bands = [
-    { y: -0.05, height: 0.38, angle: -10, alpha: 0.32 },
-    { y: 0.22, height: 0.56, angle: -16, alpha: 0.7 },   // alpha = 색 진하기 (낮을수록 밝음)
-  ];
-  ctx.filter = "blur(55px) saturate(1.3)";   // 번지게 + 채도 30% 올려 맑게
-  for (const b of bands) {
-    ctx.save();
-    ctx.globalAlpha = b.alpha;
-    ctx.translate(w / 2, h * (b.y + b.height / 2));
-    ctx.rotate(b.angle * Math.PI / 180);
-    const bw = w * 1.7;
-    const bh = h * b.height;
-    const g = ctx.createLinearGradient(-bw / 2, 0, bw / 2, 0);
-    let ci = 0;
-    for (const color of bandColors) {
-      g.addColorStop(ci / (bandColors.length - 1), color);
-      ci += 1;
-    }
-    ctx.fillStyle = g;
-    ctx.fillRect(-bw / 2, -bh / 2, bw, bh);
-    ctx.restore();
+function hexToHsl(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = ((n >> 16) & 255) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  let h = 0, s = 0;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if (max === r) h = ((g - b) / d + (g < b ? 6 : 0));
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h *= 60;
   }
-  ctx.filter = "none";
-
-  // 필름 입자: 레퍼런스처럼 진한 색일수록 입자가 강하고, 밝은 곳은 약하게
-  const img = ctx.getImageData(0, 0, w, h);
-  const px = img.data;
-  for (let i = 0; i < px.length; i += 4) {
-    const light = (px[i] + px[i + 1] + px[i + 2]) / 765;          // 0(어두움) ~ 1(밝음)
-    const amount = GRAIN * (0.25 + 0.75 * (1 - light) * 1.6);     // 밝을수록 약하게
-    const n = (Math.random() + Math.random() - 1) * amount;       // 가운데 값이 많은 고운 입자
-    px[i] += n;
-    px[i + 1] += n;
-    px[i + 2] += n;
-  }
-  ctx.putImageData(img, 0, 0);
+  return [h, s * 100, l * 100];
 }
-drawBackground();
+const baseHsl = bandColors.map(hexToHsl);
 
-// 창 크기가 바뀌면 다시 그리기 (잠깐 멈췄을 때 한 번만)
+const BANDS = [
+  { y: -0.05, height: 0.38, angle: -10, alpha: 0.32, ph: 0 },
+  { y: 0.22, height: 0.56, angle: -16, alpha: 0.7, ph: 2.1 },
+];
+
+function sizeBackground() {
+  bgCanvas.width = Math.max(2, Math.ceil(bgCanvas.clientWidth * BG_SCALE));
+  bgCanvas.height = Math.max(2, Math.ceil(bgCanvas.clientHeight * BG_SCALE));
+}
+
+function paintBackground(sec) {
+  const w = bgCanvas.width, h = bgCanvas.height;
+  bgCtx.filter = "none";
+  bgCtx.globalAlpha = 1;
+  bgCtx.fillStyle = "#fbfaf8";
+  bgCtx.fillRect(0, 0, w, h);
+  bgCtx.filter = `blur(${Math.round(55 * BG_SCALE)}px) saturate(1.3)`;
+  const t = sec * WAVE_SPEED;
+  for (const b of BANDS) {
+    bgCtx.save();
+    bgCtx.globalAlpha = b.alpha;
+    bgCtx.translate(w / 2, h * (b.y + b.height / 2));
+    bgCtx.rotate(b.angle * Math.PI / 180);
+    const bw = w * 1.7, bh = h * b.height;
+    const g = bgCtx.createLinearGradient(-bw / 2, 0, bw / 2, 0);
+    let i = 0;
+    for (const [hue, s, l] of baseHsl) {
+      const shift = HUE_SWING * Math.sin(t * 0.5 + i * 1.1 + b.ph);   // 색마다 조금씩 다르게 오감
+      g.addColorStop(i / (baseHsl.length - 1), `hsl(${hue + shift} ${s}% ${l}%)`);
+      i += 1;
+    }
+    bgCtx.fillStyle = g;
+    // 위·아래 가장자리를 물결 모양으로
+    const amp = bh * 0.22;
+    const step = bw / 24;
+    bgCtx.beginPath();
+    for (let x = -bw / 2, k = 0; k <= 24; x += step, k += 1) {
+      const y = -bh / 2 + amp * Math.sin(k * 0.55 + t + b.ph);
+      if (k === 0) bgCtx.moveTo(x, y); else bgCtx.lineTo(x, y);
+    }
+    for (let x = bw / 2, k = 24; k >= 0; x -= step, k -= 1) {
+      const y = bh / 2 + amp * Math.sin(k * 0.45 - t * 0.8 + b.ph + 1.3);
+      bgCtx.lineTo(x, y);
+    }
+    bgCtx.closePath();
+    bgCtx.fill();
+    bgCtx.restore();
+  }
+  bgCtx.filter = "none";
+}
+
+// 고정 노이즈: 한 번만 만든 작은 타일을 배경 위에 반복해서 깖 (움직이지 않음)
+(function makeGrain() {
+  const tile = document.createElement("canvas");
+  tile.width = tile.height = 256;
+  const tctx = tile.getContext("2d");
+  const img = tctx.createImageData(256, 256);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.random() < 0.5 ? 0 : 255;
+    img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+    img.data[i + 3] = Math.random() * 22;
+  }
+  tctx.putImageData(img, 0, 0);
+  document.querySelector(".bg").style.setProperty("--grain", `url(${tile.toDataURL()})`);
+})();
+
+sizeBackground();
+paintBackground(0);
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (!reduceMotion) {
+  let last = 0;
+  const loop = (now) => {
+    if (now - last > 33) {          // 약 30프레임
+      last = now;
+      paintBackground(now / 1000);
+    }
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+}
+
+// 창 크기가 바뀌면 캔버스 크기만 다시 맞춤
 let resizeTimer = 0;
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(drawBackground, 200);
+  resizeTimer = setTimeout(() => { sizeBackground(); paintBackground(performance.now() / 1000); }, 150);
 });
 
 // 1) 상단 메뉴 + 호버 시 펼쳐지는 미리보기 목록 (모든 페이지에서 위치·크기 동일)
