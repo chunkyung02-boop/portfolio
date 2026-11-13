@@ -587,11 +587,27 @@ const chIo = new IntersectionObserver(es => es.forEach(e => {
 document.querySelectorAll('.chap').forEach(c => chIo.observe(c));
 
 /* 그리드 위 설명: 마우스를 올린 작업의 번호, 이름, 한 줄 설명을 보여 준다 */
+let workShown = -1, workTimer = 0;
 function showWork(i) {
-  const g = gridItems[i]; if (!g) return;
-  document.getElementById('hovT').innerHTML = `<span>[${String(i + 1).padStart(2, '0')}]</span>${esc(g.p.title || '')}`;
-  document.getElementById('hovD').textContent = g.p.oneLine || g.p.summary || g.p.status || '';
+  const g = gridItems[i]; if (!g || i === workShown) return;
+  const t = document.getElementById('hovT'), d = document.getElementById('hovD');
+  const fill = () => {
+    t.innerHTML = `<span>[${String(i + 1).padStart(2, '0')}]</span>${esc(g.p.title || '')}`;
+    d.textContent = g.p.oneLine || g.p.summary || g.p.status || '';
+  };
   document.getElementById('hovL').href = '#' + g.p.id;
+  const first = workShown < 0; workShown = i;
+  if (first || matchMedia('(prefers-reduced-motion: reduce)').matches) { fill(); return; }
+  /* 제목·설명이 딱 끊기지 않게: 0.12초 동안 위로 사라지고, 새 글이 0.22초 동안 아래에서 올라온다 */
+  clearTimeout(workTimer);
+  const out = [{opacity: 1, transform: 'translateY(0)'}, {opacity: 0, transform: 'translateY(-6px)'}];
+  const inn = [{opacity: 0, transform: 'translateY(8px)'}, {opacity: 1, transform: 'translateY(0)'}];
+  [t, d].forEach(el => el.getAnimations().forEach(a => a.cancel()));
+  [t, d].forEach(el => el.animate(out, {duration: 120, easing: 'ease-in', fill: 'forwards'}));
+  workTimer = setTimeout(() => {
+    fill();
+    [t, d].forEach((el, k) => { el.getAnimations().forEach(a => a.cancel()); el.animate(inn, {duration: 220, delay: k * 35, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards'}); });
+  }, 120);
 }
 showWork(0);
 document.querySelectorAll('.cell').forEach(c => { c.addEventListener('pointerenter', () => showWork(+c.dataset.i)); c.addEventListener('focus', () => showWork(+c.dataset.i)); });
