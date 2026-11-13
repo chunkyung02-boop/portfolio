@@ -50,6 +50,9 @@ header .brand{font:500 17px var(--display);text-decoration:none;letter-spacing:-
 header nav{display:flex;gap:28px}
 header nav a{text-decoration:none;font-size:15px;opacity:.7;transition:opacity .3s}
 header nav a:hover,header nav a.on{opacity:1}
+.hline{position:fixed;z-index:4;left:0;right:0;top:68px;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .6s cubic-bezier(.2,.7,.2,1);pointer-events:none}
+.hline.on{transform:scaleX(1)}
+
 header nav a[href="#index"]{max-width:120px;overflow:hidden;white-space:nowrap;transition:max-width .45s,opacity .35s,margin .45s}
 header nav.in-hero a[href="#index"]{max-width:0;opacity:0 !important;margin-right:-28px;pointer-events:none}
 
@@ -195,13 +198,13 @@ figcaption{color:var(--sub);font-size:14px;margin-top:10px}
 .visual .aw span{display:block;color:var(--sub);font-size:15.5px}
 .visual .txt p{color:var(--sub);max-width:32em;margin-bottom:24px}
 
-/* 첫 화면 끝 ~ 프로젝트 사이: 보라색 막대가 솟았다가 얇은 구분선으로 눌려 남는다 */
+/* 첫 화면 끝 ~ 프로젝트 사이: 보라색 막대가 한 번 솟았다 가라앉는다. 그 뒤 메뉴 아래에 보라 선(.hline)이 그려진다 */
 .wave{display:grid;grid-template-columns:repeat(12,1fr);height:34vh;margin-top:-34vh;position:relative;z-index:3;pointer-events:none}
 .wave i{background:var(--accent);box-shadow:1px 0 0 var(--accent);transform-origin:bottom;transform:scaleY(0);display:block}   /* 막대 사이 이음매가 비치지 않게 1px 덮는다 */
 @supports (animation-timeline:view()){
   @media (prefers-reduced-motion:no-preference){
     .wave i{animation:wave linear both;animation-timeline:view();animation-range:entry calc(var(--k)*4%) exit calc(60% + var(--k)*3%)}
-    @keyframes wave{0%{transform:scaleY(0)}45%{transform:scaleY(var(--h,1))}100%{transform:scaleY(.012)}}   /* 솟았다가 가는 선(약 3px)으로 눌려 프로젝트 위 구분선으로 남는다 */
+    @keyframes wave{0%{transform:scaleY(0)}45%{transform:scaleY(var(--h,1))}100%{transform:scaleY(0)}}
   }
 }
 /* ---------- 블라인드 전환: 밝은 구간에서 어두운 구간으로 한 번만 넘어간다 ---------- */
@@ -347,6 +350,7 @@ html.v-open{overscroll-behavior:none}
 </head>
 <body>
 <a class="mono-logo" href="#top" aria-label="MoNO · 처음으로"><img src="assets/mono_white.png" alt="MoNO 로고"></a>
+<div class="hline" id="hline" aria-hidden="true"></div>
 <header>
   <a class="brand" href="#top" id="brand"></a>
   <nav id="nav">
@@ -570,7 +574,8 @@ requestAnimationFrame(() => document.getElementById('hero').classList.add('ready
 const navLinks = [...document.querySelectorAll('#nav a')];
 /* 첫 화면에는 View projects 버튼이 있으므로 위 메뉴의 Projects 는 숨기고, 프로젝트 구간부터 나타낸다 */
 const navEl = document.getElementById('nav'), heroSec = document.getElementById('hero');
-const syncNav = () => navEl.classList.toggle('in-hero', heroSec.getBoundingClientRect().bottom > innerHeight * .55);
+const hlineEl = document.getElementById('hline');
+const syncNav = () => { const inHero = heroSec.getBoundingClientRect().bottom > innerHeight * .55; navEl.classList.toggle('in-hero', inHero); hlineEl.classList.toggle('on', !inHero); };
 addEventListener('scroll', syncNav, {passive: true}); addEventListener('resize', syncNav); syncNav();
 const projectIds = new Set(['index', 'others', ...all.map(x => x[1].id)]);
 const mid = {rootMargin: '-45% 0px -45% 0px'};
