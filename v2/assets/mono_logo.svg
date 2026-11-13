@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- MONO 로고: 위아래가 평평한 각진 모래시계 + 허리 전체를 덮는 보라색 띠 -->
+  <defs>
+    <clipPath id="b"><path id="s" d="M15 9 H49 Q51.5 9 50.5 11.5 L42 27.5 Q41 29.5 42.6 30.6 L45 32.5 V41.5 L42.6 43.4 Q41 44.5 42 46.5 L50.5 52.5 Q51.5 55 49 55 H15 Q12.5 55 13.5 52.5 L22 46.5 Q23 44.5 21.4 43.4 L19 41.5 V32.5 L21.4 30.6 Q23 29.5 22 27.5 L13.5 11.5 Q12.5 9 15 9 Z"/></clipPath>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#141416"/>
+  <g clip-path="url(#b)">
+    <rect x="0" y="0" width="64" height="64" fill="#F3F4F5"/>
+    <rect x="0" y="32.5" width="64" height="9" fill="#7B4DFF"/>
+  </g>
+</svg>
