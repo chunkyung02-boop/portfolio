@@ -82,7 +82,7 @@ figcaption{color:var(--sub);font-size:14px;margin-top:10px}
 .rv.in{opacity:1;transform:none}
 
 /* ---------- 첫 화면: 큰 글자 두 줄 + 작업물 리본 ---------- */
-.hero{padding:0;height:420vh}
+.hero{padding:0;height:330vh}
 .hero .pin{position:sticky;top:0;height:100dvh;overflow:hidden;display:grid;grid-template-rows:1fr auto;padding:84px var(--pad) clamp(28px,5vh,52px)}
 .hero .lines{align-self:center;position:relative;z-index:2;pointer-events:none;transform:translateZ(0)}
 .hero .ln{display:block;font:400 clamp(32px,6.2vw,108px)/1.08 var(--display);letter-spacing:-.05em;white-space:nowrap;will-change:transform}
@@ -194,6 +194,15 @@ figcaption{color:var(--sub);font-size:14px;margin-top:10px}
 .visual .aw span{display:block;color:var(--sub);font-size:15.5px}
 .visual .txt p{color:var(--sub);max-width:32em;margin-bottom:24px}
 
+/* 첫 화면 끝 ~ 프로젝트 사이: 보라색 막대가 한 번 솟았다 내려가며 빈 구간을 잇는다 */
+.wave{display:grid;grid-template-columns:repeat(12,1fr);height:34vh;margin-top:-34vh;position:relative;z-index:3;pointer-events:none}
+.wave i{background:var(--accent);transform-origin:bottom;transform:scaleY(0);display:block}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .wave i{animation:wave linear both;animation-timeline:view();animation-range:entry calc(var(--k)*4%) exit calc(60% + var(--k)*3%)}
+    @keyframes wave{0%{transform:scaleY(0)}45%{transform:scaleY(var(--h,1))}100%{transform:scaleY(0)}}
+  }
+}
 /* ---------- 블라인드 전환: 밝은 구간에서 어두운 구간으로 한 번만 넘어간다 ---------- */
 .blinds{display:grid;grid-template-columns:repeat(12,1fr);height:42vh;padding:0;background:var(--bg)}
 .blinds i{background:#0F0F0F;transform-origin:bottom;display:block}
@@ -311,7 +320,7 @@ html.v-open{overscroll-behavior:none}
   body{font-size:16px}
   header nav{gap:18px}
   header nav a:not(.keep){display:none}
-  .hero{height:300vh}
+  .hero{height:250vh}
   .hero .ln{white-space:normal;font-size:clamp(32px,10vw,64px)}
   .hero .ln.l2{text-align:left}
   .hero .foot,.visual .media,.main .grid,.subp .top,.subp .flow,.others .two,.visual .below,.resume .cols,.about .points{grid-template-columns:1fr}
@@ -508,6 +517,7 @@ const visual = `
   </div>
 </section>`;
 
+const wave = `<div class="wave" aria-hidden="true">${Array.from({length: 12}, (_, i) => `<i style="--k:${(i * 5) % 12};--h:${(.62 + ((i * 7) % 12) / 12 * .38).toFixed(2)}"></i>`).join('')}</div>`;
 const blinds = `<div class="blinds" aria-hidden="true">${Array.from({length: 12}, (_, i) => `<i style="--k:${(i * 5) % 12}"></i>`).join('')}</div>`;
 
 const C = D.contact;
@@ -544,7 +554,7 @@ const darkPart = `
   <footer><span style="display:inline-flex;align-items:center;gap:10px"><img src="assets/mono_black.png" alt="" style="height:30px;width:auto">${esc(D.name)}${when(D.nameKo, ' ' + esc(D.nameKo))}</span><span>화면은 AI와 함께 제작했습니다.</span></footer>
 </div>`;
 
-document.getElementById('top').innerHTML = hero + index + visual + blinds + darkPart;
+document.getElementById('top').innerHTML = hero + wave + index + visual + blinds + darkPart;
 document.getElementById('nav').insertAdjacentHTML('beforeend',
   [[D.deckUrl, 'Portfolio PDF'], [D.resumeUrl, 'Resume PDF']].filter(x => x[0]).map(x => `<a class="ext" href="${esc(x[0])}" target="_blank" rel="noopener">${x[1]} ↗</a>`).join(''));   // 프로젝트 상세는 카드를 누르면 열리는 뷰어(viewer.js)에서 읽는다
 
