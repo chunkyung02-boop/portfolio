@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Kyungmin Jeon | AI Product Designer</title>
 <meta name="description" content="보는 눈으로 설계하고 AI로 끝까지 만듭니다. 전경민의 포트폴리오.">
-<link rel="icon" href="assets/mono_logo.svg" type="image/svg+xml">
+<link rel="icon" href="assets/mono_tile.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
@@ -44,9 +44,9 @@ img{display:block;max-width:100%}
 header{position:fixed;top:0;left:0;right:0;z-index:4;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);
   color:#fff;mix-blend-mode:difference}
 header .brand{font:500 17px var(--display);text-decoration:none;letter-spacing:-.01em;padding-left:56px}
-.mono-logo{position:fixed;z-index:5;left:var(--pad);top:12px;width:44px;height:44px;display:block;transition:transform .35s}
+.mono-logo{position:fixed;z-index:5;left:var(--pad);top:10px;width:44px;height:48px;display:flex;align-items:center;justify-content:center;mix-blend-mode:difference;transition:transform .35s}
 .mono-logo:hover{transform:rotate(-8deg) scale(1.08)}
-.mono-logo img{width:100%;height:100%}
+.mono-logo img{height:40px;width:auto}
 header nav{display:flex;gap:28px}
 header nav a{text-decoration:none;font-size:15px;opacity:.7;transition:opacity .3s}
 header nav a:hover,header nav a.on{opacity:1}
@@ -333,7 +333,7 @@ html.v-open{overscroll-behavior:none}
 </style>
 </head>
 <body>
-<a class="mono-logo" href="#top" aria-label="MONO · 처음으로"><img src="assets/mono_logo.svg" alt="MONO 로고"></a>
+<a class="mono-logo" href="#top" aria-label="MONO · 처음으로"><img src="assets/mono_white.png" alt="MONO 로고"></a>
 <header>
   <a class="brand" href="#top" id="brand"></a>
   <nav id="nav">
@@ -535,12 +535,13 @@ const darkPart = `
   </section>
   <section class="contact" id="contact">
     <div class="wrap">
+      <img class="rv" src="assets/mono_white.png" alt="MONO" style="height:clamp(84px,9vw,132px);width:auto;margin-bottom:30px">
       <p class="msg rv">${esc(C.message)}</p>
       ${when(C.email, `<a class="mail rv" style="--i:1" href="mailto:${esc(C.email)}">${esc(C.email)}</a>`)}
       <div class="lks rv" style="--i:2">${links(C.links)}</div>
     </div>
   </section>
-  <footer><span style="display:inline-flex;align-items:center;gap:10px"><img src="assets/mono_logo.svg" alt="" style="width:26px;height:26px">${esc(D.name)}${when(D.nameKo, ' ' + esc(D.nameKo))}</span><span>화면은 AI와 함께 제작했습니다.</span></footer>
+  <footer><span style="display:inline-flex;align-items:center;gap:10px"><img src="assets/mono_black.png" alt="" style="height:30px;width:auto">${esc(D.name)}${when(D.nameKo, ' ' + esc(D.nameKo))}</span><span>화면은 AI와 함께 제작했습니다.</span></footer>
 </div>`;
 
 document.getElementById('top').innerHTML = hero + index + visual + blinds + darkPart;   // 프로젝트 상세는 카드를 누르면 열리는 뷰어(viewer.js)에서 읽는다
