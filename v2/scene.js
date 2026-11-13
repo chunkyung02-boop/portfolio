@@ -252,7 +252,7 @@ function start() {
           const u = ix / SX - .5, v = .5 - iy / SY;
           const lx0 = u * gw, ly0 = v * gh;
           const lx = lx0 * cry, lz = lx0 * sry;
-          const wind = reduce ? 0 : Math.sin(u * 5.2 + t * 1.1 + s.order * 1.7) * Math.cos(v * 4.1 + t * .8 + s.order) * 3.5;
+          const wind = 0;   // 가만히 있을 때 모서리가 일렁이지 않도록 고정
           const du = u - s.px, dv = v - s.py;
           const dent = -s.dent * 30 * Math.exp(-(du * du + dv * dv * .5) / .06) + s.dent * 8;
           const bend = bvy * (v * v * 4 - .35) + bvx * (u * u * 4 - .35);
