@@ -27,7 +27,7 @@ window.PORTFOLIO = {
   nameKo: "전경민",
   role: "Product Engineer",
   headline: "시각 감각으로 설계하는 AI 프로덕트",
-  intro: "CG 합성 2년의 눈과 AI 제작 방식으로 패션 이커머스의 화면과 경험을 만듭니다.",
+  intro: "사용자가 막히는 순간을 찾아 AI로 빠르게 만들고, 직접 써 보며 사용 경험을 고치는 프로덕트 엔지니어입니다.",
   deckUrl: "https://chunkyung02-boop.github.io/portfolio/portfolio-deck.pdf",   // 포트폴리오 PDF (27장)
   resumeUrl: "resume.pdf",        // 이력서 PDF (공개용, 전화번호 제외)
   heroLines: ["Designed with a trained eye", "Built end to end with AI"],   // 첫 화면 큰 글자 두 줄
