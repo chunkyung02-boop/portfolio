@@ -25,7 +25,7 @@ window.PORTFOLIO = {
   /* ---------- 기본 정보 ---------- */
   name: "Kyungmin Jeon",
   nameKo: "전경민",
-  role: "AI Product Designer",
+  role: "Product Engineer",
   headline: "시각 감각으로 설계하는 AI 프로덕트",
   intro: "CG 합성 2년의 눈과 AI 제작 방식으로 패션 이커머스의 화면과 경험을 만듭니다.",
   deckUrl: "https://chunkyung02-boop.github.io/portfolio/portfolio-deck.pdf",   // 포트폴리오 PDF (27장)
