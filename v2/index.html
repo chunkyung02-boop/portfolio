@@ -195,13 +195,13 @@ figcaption{color:var(--sub);font-size:14px;margin-top:10px}
 .visual .aw span{display:block;color:var(--sub);font-size:15.5px}
 .visual .txt p{color:var(--sub);max-width:32em;margin-bottom:24px}
 
-/* 첫 화면 끝 ~ 프로젝트 사이: 보라색 막대가 한 번 솟았다 내려가며 빈 구간을 잇는다 */
+/* 첫 화면 끝 ~ 프로젝트 사이: 보라색 막대가 솟았다가 얇은 구분선으로 눌려 남는다 */
 .wave{display:grid;grid-template-columns:repeat(12,1fr);height:34vh;margin-top:-34vh;position:relative;z-index:3;pointer-events:none}
 .wave i{background:var(--accent);transform-origin:bottom;transform:scaleY(0);display:block}
 @supports (animation-timeline:view()){
   @media (prefers-reduced-motion:no-preference){
     .wave i{animation:wave linear both;animation-timeline:view();animation-range:entry calc(var(--k)*4%) exit calc(60% + var(--k)*3%)}
-    @keyframes wave{0%{transform:scaleY(0)}45%{transform:scaleY(var(--h,1))}100%{transform:scaleY(0)}}
+    @keyframes wave{0%{transform:scaleY(0)}45%{transform:scaleY(var(--h,1))}100%{transform:scaleY(.012)}}   /* 솟았다가 가는 선(약 3px)으로 눌려 프로젝트 위 구분선으로 남는다 */
   }
 }
 /* ---------- 블라인드 전환: 밝은 구간에서 어두운 구간으로 한 번만 넘어간다 ---------- */
