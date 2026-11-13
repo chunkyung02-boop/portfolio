@@ -177,9 +177,10 @@ figcaption{color:var(--sub);font-size:14px;margin-top:10px}
 .others figure{margin-top:26px}
 
 /* ---------- 시각 작업 ---------- */
-.visual .media{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(18px,2.4vw,36px);align-items:start;max-width:940px;margin-top:clamp(32px,4vw,56px)}
+.visual .media{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:clamp(18px,2.4vw,36px);align-items:start;max-width:1180px;margin-top:clamp(32px,4vw,56px)}
 .visual .media img{aspect-ratio:4/3;object-fit:cover}
-.visual .cert img{object-fit:contain;background:#0F0F0F}
+.visual .cert img{aspect-ratio:auto;object-fit:contain;background:#0F0F0F;width:100%;box-shadow:0 26px 60px rgba(20,20,22,.22)}
+.visual .cert figcaption{color:var(--ink);font-weight:600}
 .visual .below{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(28px,6vw,96px);margin-top:36px;align-items:start}
 .visual .rank{font:400 clamp(44px,6vw,88px)/.95 var(--display);letter-spacing:-.06em;color:var(--accent)}
 .visual .aw{margin-top:14px}
@@ -491,8 +492,8 @@ const visual = `
   <div class="wrap">
     <h2 class="rv">${esc(V.title)}</h2>
     <div class="media">
-      ${when(V.image, `<figure class="rv"><img src="${esc(V.image)}" alt="${esc(V.imageAlt)}" loading="lazy"><figcaption>${esc(V.imageAlt || '')}</figcaption></figure>`)}
-      ${when(V.awardImage, `<figure class="rv cert" style="--i:1"><img src="${esc(V.awardImage)}" alt="${esc(V.awardImageAlt || '수상 증서')}" loading="lazy"><figcaption>${esc(V.awardImageAlt || '')}</figcaption></figure>`)}
+      ${when(V.awardImage, `<figure class="rv cert" ><img src="${esc(V.awardImage)}" alt="${esc(V.awardImageAlt || '수상 증서')}" loading="lazy"><figcaption>${esc(V.awardImageAlt || '')}</figcaption></figure>`)}
+      ${when(V.image, `<figure class="rv" style="--i:1"><img src="${esc(V.image)}" alt="${esc(V.imageAlt)}" loading="lazy"><figcaption>${esc(V.imageAlt || '')}</figcaption></figure>`)}
     </div>
     <div class="below">
       <div class="rv"><div class="rank">${esc(V.award.rank)}</div><div class="aw"><b>${esc(V.award.name)}</b><span>${esc(V.award.field)}</span></div></div>
