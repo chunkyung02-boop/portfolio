@@ -394,8 +394,6 @@ const hero = `
       <div><div class="role">${esc(D.name)} / ${esc(D.role)}</div><p>${esc(D.intro)}</p></div>
       <div class="cta">
         <a class="btn pri" href="#index">View projects</a>
-        ${when(D.deckUrl, `<a class="btn ghost" href="${esc(D.deckUrl)}" target="_blank" rel="noopener">Portfolio PDF</a>`)}
-        ${when(D.resumeUrl, `<a class="btn ghost" href="${esc(D.resumeUrl)}" target="_blank" rel="noopener">Resume PDF</a>`)}
       </div>
     </div>
   </div>
@@ -543,7 +541,9 @@ const darkPart = `
   <footer><span style="display:inline-flex;align-items:center;gap:10px"><img src="assets/mono_black.png" alt="" style="height:30px;width:auto">${esc(D.name)}${when(D.nameKo, ' ' + esc(D.nameKo))}</span><span>화면은 AI와 함께 제작했습니다.</span></footer>
 </div>`;
 
-document.getElementById('top').innerHTML = hero + index + visual + blinds + darkPart;   // 프로젝트 상세는 카드를 누르면 열리는 뷰어(viewer.js)에서 읽는다
+document.getElementById('top').innerHTML = hero + index + visual + blinds + darkPart;
+document.getElementById('nav').insertAdjacentHTML('beforeend',
+  [[D.deckUrl, 'Portfolio PDF'], [D.resumeUrl, 'Resume PDF']].filter(x => x[0]).map(x => `<a class="ext" href="${esc(x[0])}" target="_blank" rel="noopener">${x[1]} ↗</a>`).join(''));   // 프로젝트 상세는 카드를 누르면 열리는 뷰어(viewer.js)에서 읽는다
 
 /* =========================================================
    2. 등장 모션과 현재 위치 표시 (스크롤 이벤트 대신 관찰자 사용)
