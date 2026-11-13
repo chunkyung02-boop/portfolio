@@ -230,7 +230,7 @@ window.PORTFOLIO = {
 
   /* ---------- 연락 ---------- */
   contact: {
-    message: "패션 이커머스에서 AI 경험을 설계할 자리를 찾고 있습니다.",
+    message: "현장에서 AI 경험을 설계할 자리를 찾고 있습니다.",
     email: "chunkyung02@gmail.com",
     links: [
       { label: "GitHub", url: "https://github.com/chunkyung02-boop" },
