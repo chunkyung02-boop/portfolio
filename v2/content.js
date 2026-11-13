@@ -29,7 +29,7 @@ window.PORTFOLIO = {
   headline: "시각 감각으로 설계하는 AI 프로덕트",
   intro: "CG 합성 2년의 눈과 AI 제작 방식으로 패션 이커머스의 화면과 경험을 만듭니다.",
   deckUrl: "https://chunkyung02-boop.github.io/portfolio/portfolio-deck.pdf",   // 포트폴리오 PDF (27장)
-  resumeUrl: "",        // 이력서 PDF 경로 (예: "assets/resume.pdf")
+  resumeUrl: "resume.pdf",        // 이력서 PDF (공개용, 전화번호 제외)
   heroLines: ["Designed with a trained eye", "Built end to end with AI"],   // 첫 화면 큰 글자 두 줄
   // 작업물 목록. 첫 화면의 띠, 프로젝트 그리드, 어두운 구간의 구에 같은 이미지들이 쓰입니다 (8장 권장).
   // src 이미지 / title 이름 / group 소속 프로젝트 / desc 마우스를 올리면 보이는 한 줄 설명 / href 누르면 이동할 구간
@@ -215,10 +215,12 @@ window.PORTFOLIO = {
 
   /* ---------- 이력 ---------- */
   career: [
-    { period: "2026", title: "POTENUP AI 4기", desc: "AI 에이전트 트랙. 팀 프로젝트 3건 완주." },
-    { period: "", title: "CG 합성", desc: "2년. 2D 시네마틱 합성 작업." },          // 기간
-    { period: "", title: "패션 브랜드", desc: "인플루언서 협찬 진행, 고객 응대." },   // 기간, 회사
-    { period: "", title: "광고 대행사", desc: "마케터." }                           // 기간, 회사
+    { period: "2026 ~", title: "POTENUP AI 4기", desc: "AI 에이전트 트랙. Kucanto · 티니핑 판별기 · NOLDA 프로젝트." },
+    { period: "2024 – 2026", title: "CG 합성", desc: "CG 공부와 합성 작업 2년. Rookie Awards 2026 Rank A." },
+    { period: "2024", title: "패션 브랜드 인턴", desc: "" },
+    { period: "2024", title: "광고 영업·마케팅 인턴", desc: "" },
+    { period: "2022 – 2024", title: "군 복무", desc: "" },
+    { period: "2021 – 2022", title: "패션 브랜드 오프라인 매장 관리", desc: "" }
   ],
   skills: [
     { group: "AI 제작", items: ["Claude Code", "프롬프트 설계", "평가 기준 설계", "RAG"] },
@@ -229,7 +231,7 @@ window.PORTFOLIO = {
   /* ---------- 연락 ---------- */
   contact: {
     message: "패션 이커머스에서 AI 경험을 설계할 자리를 찾고 있습니다.",
-    email: "",                   // 공개할 이메일
+    email: "chunkyung02@gmail.com",
     links: [
       { label: "GitHub", url: "https://github.com/chunkyung02-boop" },
       { label: "Rookies", url: "https://www.therookies.co/entries/48224" }
