@@ -234,8 +234,8 @@ function start() {
         const inside = mx > rect.left && mx < rect.right && my > rect.top && my < rect.bottom;
         s.dent += ((inside ? 1 : 0) - s.dent) * .1;
         if (inside) { s.px += ((mx - rect.left) / rect.width - .5 - s.px) * .2; s.py += (.5 - (my - rect.top) / rect.height - s.py) * .2; }
-        /* 한 장씩 차례로 출발해 2.1초 동안 날아온다. 스크롤을 멈춰도 끝까지 들어온다 */
-        const target = reduce ? 1 : clamp((gridClock - s.order * .24) / 2.1);
+        /* 한 장씩 차례로(0.09초 간격) 출발해 1초 동안 날아온다. 스크롤을 멈춰도 끝까지 들어온다 */
+        const target = reduce ? 1 : clamp((gridClock - s.order * .09) / 1.0);
         s.fly = target;
         const e = 1 - Math.pow(1 - s.fly, 2.3);                                     // 처음엔 빠르고 끝에서 부드럽게
         const over = Math.sin(s.fly * Math.PI) * (1 - s.fly) * .22;                 // 제자리를 살짝 지나쳤다 돌아온다
