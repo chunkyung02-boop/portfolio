@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kyungmin Jeon | AI Product Designer</title>
+<meta name="description" content="보는 눈으로 설계하고 AI로 끝까지 만듭니다. 전경민의 포트폴리오.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+/* =========================================================
+   레이어 구성 (뒤 → 앞)
+   1  .ribbon    첫 화면을 가로지르는 작업물 리본 (CSS 3D)
+   2  내용        글자와 프로젝트
+   3  header     내비게이션 (밝은 구간, 어두운 구간 모두에서 보이도록 반전 합성)
+   구간: 밝은 구간(첫 화면, 프로젝트, 시각 작업) → 블라인드 전환 1회 → 어두운 구간(소개와 이력, 연락)
+   규칙: 모서리 = 버튼과 태그는 알약형, 이미지는 6px / 강조색 1개(--accent)
+   ========================================================= */
+:root{
+  --bg:#E9E9EB; --text:#0F0F0F; --sub:#5F5F64; --line:rgba(15,15,15,.16);
+  --accent:#E7480D;
+  --display:'Geist','Pretendard',sans-serif;
+  --body:'Pretendard','Geist',system-ui,sans-serif;
+  --pad:clamp(20px,4.5vw,64px);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+.dark{--bg:#0F0F0F;--text:#E9E9EB;--sub:#A2A2A7;--line:rgba(233,233,235,.18);color:var(--text)}
+/* 층: 어두운 바탕(0) → 작업물 캔버스(1) → 글자와 내용(2) → 내비게이션(3) */
+body{position:relative}
+.darkbg{position:absolute;left:0;right:0;background:#0F0F0F;z-index:0}
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+#glFront{position:fixed;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+.nogl #glFront{display:none}
+main{position:relative;z-index:2}
+.nogl #gl{display:none}
+*{box-sizing:border-box;margin:0}
+html{background:#E9E9EB;scroll-behavior:smooth}
+body{color:var(--text);background:#E9E9EB;font:400 17px/1.7 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+img{display:block;max-width:100%}
+header{position:fixed;top:0;left:0;right:0;z-index:4;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);
+  color:#fff;mix-blend-mode:difference}
+header .brand{font:500 17px var(--display);text-decoration:none;letter-spacing:-.01em}
+header nav{display:flex;gap:28px}
+header nav a{text-decoration:none;font-size:15px;opacity:.7;transition:opacity .3s}
+header nav a:hover,header nav a.on{opacity:1}
+
+section{padding:clamp(80px,11vw,160px) var(--pad);position:relative}
+.wrap{max-width:1320px;margin:0 auto}
+h2{font:500 clamp(20px,2.1vw,30px)/1.2 var(--display);letter-spacing:-.02em}
+h3{font:500 clamp(17px,1.5vw,21px)/1.3 var(--display);letter-spacing:-.01em}
+.btn{display:inline-flex;align-items:center;height:52px;padding:0 28px;border-radius:999px;text-decoration:none;font-weight:500;font-size:16px;white-space:nowrap;
+  transition:transform .3s var(--ease),background .3s}
+.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--accent);color:#fff}
+.btn.pri:hover{background:#C93C08}
+.btn.ghost{border:1px solid var(--text)}
+.btn.ghost:hover{background:var(--text);color:var(--bg)}
+.tl{display:inline-block;text-decoration:none;border-bottom:1px solid var(--text);padding-bottom:1px;margin-right:22px;transition:border-color .3s,color .3s}
+.tl:hover{color:var(--accent);border-color:var(--accent)}
+.tag{display:inline-block;font-size:14px;padding:3px 13px;border-radius:999px;border:1px solid var(--line);color:var(--sub);margin:0 6px 6px 0}
+.kw{display:inline-block;font-size:15px;font-weight:500;padding:5px 16px;border-radius:999px;border:1px solid var(--text);margin:0 8px 8px 0}
+.hint{color:#77777c;font-size:14.5px;border-left:2px dashed var(--accent);padding:2px 0 2px 12px;margin:6px 0}
+.nums{display:flex;flex-wrap:wrap;gap:26px 48px}
+.nums b{display:block;font:400 clamp(26px,2.8vw,40px)/1.1 var(--display);letter-spacing:-.04em}
+.nums span{color:var(--sub);font-size:14.5px}
+figure{margin:0}
+figure img{border-radius:6px;width:100%}
+figcaption{color:var(--sub);font-size:14px;margin-top:10px}
+
+/* 등장 모션: 내용이 화면에 들어올 때 순서대로 읽히게 한다 */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:calc(var(--i,0)*90ms)}
+.rv.in{opacity:1;transform:none}
+
+/* ---------- 첫 화면: 큰 글자 두 줄 + 작업물 리본 ---------- */
+.hero{padding:0;height:420vh}
+.hero .pin{position:sticky;top:0;height:100dvh;overflow:hidden;display:grid;grid-template-rows:1fr auto;padding:84px var(--pad) clamp(28px,5vh,52px)}
+.hero .lines{align-self:center;position:relative;z-index:2;pointer-events:none;transform:translateZ(0)}
+.hero .ln{display:block;font:400 clamp(32px,6.2vw,108px)/1.08 var(--display);letter-spacing:-.05em;white-space:nowrap;will-change:transform}
+.hero .ln.l2{text-align:right}
+.hero .ln span{display:inline-block;transform:translateX(var(--from));opacity:0;transition:transform 1.3s var(--ease),opacity 1.3s var(--ease)}
+.hero.ready .ln span{transform:none;opacity:1}
+.hero .foot{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:end}
+.hero .foot .role{font:500 17px var(--display);margin-bottom:6px}
+.hero .foot p{max-width:30em;color:#2c2c2f;font-size:16.5px}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+
+/* ---------- 프로젝트 목록: 작업물 그리드 (칸은 자리만 잡고, 이미지는 캔버스의 천이 채운다) ---------- */
+.index .ixhead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:32px;align-items:start;margin-bottom:clamp(22px,3vw,40px)}
+.index .ixhead h2 span{font-size:.62em;color:var(--sub);margin-right:8px}
+.index .ixhead p{color:var(--sub);font-size:15.5px;max-width:26em;min-height:3.2em}
+.btn.sm{height:40px;padding:0 20px;font-size:14.5px;background:var(--text);color:var(--bg)}
+.btn.sm:hover{background:var(--accent);color:#fff}
+.hov b{display:block;font:500 clamp(20px,2.2vw,30px)/1.2 var(--body);letter-spacing:-.02em}
+.hov b span{font:500 .62em var(--display);color:var(--sub);margin-right:10px}
+.hov p{color:var(--sub);margin-top:6px;max-width:30em;min-height:3.4em}
+.pgrid{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,1fr);gap:clamp(18px,2.2vw,36px);align-items:stretch}
+.pmain{display:flex;min-width:0}
+.pmain .cell{display:flex;flex-direction:column;flex:1 1 0;min-width:0;width:100%}
+.pside{min-width:0}
+.pmain .ph{flex:1;aspect-ratio:auto;min-height:clamp(260px,34vw,560px)}
+.pside{display:grid;gap:clamp(18px,2.2vw,36px);align-content:start}
+.psub{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.6vw,24px)}
+.petc{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.6vw,24px);width:68%}
+.cell .ph b{font:500 clamp(18px,2.2vw,34px)/1.15 var(--body);letter-spacing:-.03em}
+.cell .ph.noimg{display:flex;align-items:flex-end;padding:clamp(12px,1.6vw,24px)}
+.cell .ph.noimg b{opacity:0}
+.nogl .cell .ph.noimg{background:#0F0F0F;color:#E9E9EB}
+.nogl .cell .ph.noimg b{opacity:1}
+.petc .ph b{font-size:clamp(14px,1.3vw,20px)}
+.cell .ct i{font-style:normal;color:var(--accent);margin-right:8px;font-size:.92em}
+.pmain .ct{font-size:19px}
+.petc .ct{font-size:14px}
+.cell{text-decoration:none;display:block}
+.cell .ph{display:block;aspect-ratio:16/10;border-radius:7px;overflow:hidden}
+.cell .ph img{width:100%;height:100%;object-fit:cover;opacity:0}
+.nogl .cell .ph img{opacity:1}
+.cell .ct{display:block;margin-top:12px;font-size:15px;font-weight:500;letter-spacing:-.01em}
+.cell .cs{display:block;color:var(--sub);font-size:14px}
+
+/* ---------- 프로젝트 첫머리 (한 줄 정의, 기간과 역할, 기술, 성과 두 가지) ---------- */
+.head .one{font:400 clamp(17px,1.6vw,22px)/1.5 var(--body);letter-spacing:-.02em;margin:16px 0 20px;max-width:30em}
+.head .kws{margin-bottom:22px}
+.head dl{display:grid;grid-template-columns:104px 1fr;gap:14px 20px;font-size:16px;border-top:1px solid var(--text);padding-top:22px}
+.head dt{color:var(--sub)}
+.head dd b{font-weight:500}
+.head .lk{margin-top:22px}
+
+/* ---------- 메인 프로젝트 ---------- */
+.main .grid{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,8fr);gap:clamp(32px,6vw,96px);align-items:start}
+.main .side{position:sticky;top:104px}
+.main .status{display:inline-block;font-size:14px;font-weight:500;padding:4px 14px;border-radius:999px;background:var(--accent);color:#fff;margin-bottom:18px}
+.main .toc{margin-top:26px;display:grid;gap:2px}
+.main .toc a{text-decoration:none;color:var(--sub);padding:7px 0;display:flex;gap:14px;transition:color .3s}
+.main .toc a span{font:500 14px var(--display);width:22px;padding-top:2px}
+.main .toc a:hover,.main .toc a.on{color:var(--text)}
+.chap{padding-top:clamp(56px,7vw,96px)}
+.chap h3{display:flex;gap:16px;align-items:baseline}
+.chap h3 span{font:500 16px var(--display);color:var(--sub)}
+.chap .claim{font:400 clamp(17px,1.7vw,23px)/1.45 var(--body);letter-spacing:-.02em;margin-top:18px;max-width:26em}
+.chap .body{color:var(--sub);margin-top:14px;max-width:38em}
+.chap .items{margin-top:22px;border-top:1px solid var(--line)}
+.chap .it{display:grid;grid-template-columns:170px 1fr;gap:20px;padding:18px 0}
+.chap .it b{font-weight:500}
+.chap .it p{color:var(--sub)}
+.chap .nums{margin-top:26px}
+.chap figure{margin-top:28px}
+/* 세 개의 층을 겹친 판으로 보여 주는 도식 (구조 설명용이라 판 형태를 썼다) */
+.stack{height:clamp(300px,36vw,460px);perspective:1500px;display:grid;place-items:center;margin-top:10px}
+.planes{position:relative;width:min(56%,320px);aspect-ratio:1.25;transform-style:preserve-3d;transform:rotateX(58deg) rotateZ(-42deg)}
+.plane{position:absolute;inset:0;border:1px solid var(--text);border-radius:6px;background:rgba(255,255,255,.55);
+  transform:translateZ(calc(var(--n)*var(--gap,84px)));display:flex;align-items:flex-end;padding:14px 16px;font:500 clamp(14px,1.5vw,18px) var(--body)}
+.plane:nth-child(2){background:rgba(231,72,13,.85);color:#fff;border-color:var(--accent)}
+.plane:nth-child(3){background:rgba(15,15,15,.9);color:#E9E9EB}
+@property --gap{syntax:'<length>';inherits:true;initial-value:84px}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .planes{animation:spread linear both;animation-timeline:view();animation-range:entry 10% cover 55%}
+    @keyframes spread{from{--gap:6px;transform:rotateX(58deg) rotateZ(-70deg)}to{--gap:84px;transform:rotateX(58deg) rotateZ(-42deg)}}
+  }
+}
+
+/* ---------- 서브 프로젝트 ---------- */
+.subp .top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,80px);align-items:start}
+.subp .flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,48px);margin-top:clamp(44px,6vw,80px)}
+.subp .st{border-top:1px solid var(--text);padding-top:16px}
+.subp .st b{display:block;font-size:19px;font-weight:500;margin-bottom:8px}
+.subp .st p{color:var(--sub);font-size:16px}
+.subp .nums{margin-top:clamp(36px,5vw,64px)}
+
+/* ---------- 기타 프로젝트 ---------- */
+.others h2{margin-bottom:clamp(36px,5vw,64px)}
+.others .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(36px,6vw,96px);align-items:start}
+.others .head .one{font-size:clamp(18px,1.7vw,22px)}
+.others figure{margin-top:26px}
+
+/* ---------- 시각 작업 ---------- */
+.visual .media{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(18px,2.4vw,36px);align-items:start;max-width:940px;margin-top:clamp(32px,4vw,56px)}
+.visual .media img{aspect-ratio:4/3;object-fit:cover}
+.visual .cert img{object-fit:contain;background:#0F0F0F}
+.visual .below{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(28px,6vw,96px);margin-top:36px;align-items:start}
+.visual .rank{font:400 clamp(44px,6vw,88px)/.95 var(--display);letter-spacing:-.06em;color:var(--accent)}
+.visual .aw{margin-top:14px}
+.visual .aw span{display:block;color:var(--sub);font-size:15.5px}
+.visual .txt p{color:var(--sub);max-width:32em;margin-bottom:24px}
+
+/* ---------- 블라인드 전환: 밝은 구간에서 어두운 구간으로 한 번만 넘어간다 ---------- */
+.blinds{display:grid;grid-template-columns:repeat(12,1fr);height:42vh;padding:0;background:var(--bg)}
+.blinds i{background:#0F0F0F;transform-origin:bottom;display:block}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .blinds i{animation:blind linear both;animation-timeline:view();animation-range:entry calc(var(--k)*5%) cover calc(42% + var(--k)*3%)}
+    @keyframes blind{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  }
+}
+
+/* ---------- 소개와 이력 (어두운 구간) ---------- */
+.about{overflow:hidden}
+.about .wrap{position:relative;z-index:1}
+#sphereAnchor{position:absolute;right:2vw;top:clamp(60px,9vw,150px);width:min(54vw,760px);height:min(54vw,760px);pointer-events:none}
+@media (max-width:860px){#sphereAnchor{width:110vw;height:110vw;right:-30vw;top:120px}}
+.about .statement{font:400 clamp(22px,2.8vw,40px)/1.35 var(--body);letter-spacing:-.03em;max-width:20em}
+.about .points{margin-top:clamp(48px,7vw,96px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,48px)}
+.about .pt{border-top:1px solid var(--text);padding-top:16px}
+.about .pt b{display:block;font-size:19px;font-weight:500;margin-bottom:8px}
+.about .pt p{color:var(--sub);font-size:16px}
+.resume{margin-top:clamp(64px,9vw,130px)}
+.resume .rh{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,48px)}
+.resume .cols{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(36px,7vw,120px)}
+.resume h4{font-size:16px;font-weight:500;color:var(--sub);padding-bottom:14px;border-bottom:1px solid var(--line)}
+.cr{display:grid;grid-template-columns:96px 1fr;gap:16px;padding:20px 0}
+.cr .pd{color:var(--sub);font:500 15px var(--display);padding-top:3px}
+.cr b{font-weight:500;font-size:18px}
+.cr p{color:var(--sub);font-size:15.5px}
+.sk{padding:20px 0}
+.sk b{display:block;font-weight:500;margin-bottom:4px}
+.sk p{color:var(--sub);font-size:15.5px}
+
+/* ---------- 연락 ---------- */
+.contact{min-height:78dvh;display:flex;align-items:center}
+.contact .msg{font:400 clamp(24px,3.4vw,50px)/1.25 var(--body);letter-spacing:-.035em;max-width:16em}
+.contact .mail{display:inline-block;margin-top:40px;font:500 clamp(20px,2.6vw,34px) var(--display);text-decoration:none;border-bottom:1px solid var(--text);transition:color .3s,border-color .3s}
+.contact .mail:hover{color:var(--accent);border-color:var(--accent)}
+.contact .lks{margin-top:34px}
+footer{padding:26px var(--pad);color:var(--sub);font-size:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+
+/* ---------- 프로젝트 뷰어 (viewer.js) ----------
+   층: 페이지 위 전체 화면(5). 어두운 방 안에 가운데 장 하나를 크게, 앞뒤 장을 양옆에 비스듬히 놓는다.
+   규칙: 장(16:10 문서 면)은 PDF 한 장을 뜻하는 면이라 판 형태를 썼다 */
+/* 뷰어가 열려도 페이지 스크롤바는 그대로 둔다 (없애면 화면 폭이 바뀌어 레이아웃이 흔들린다). 대신 뒤 페이지가 스크롤되지 않게 이벤트를 막는다 */
+html.v-open{overscroll-behavior:none}
+#viewer.anim .vp{transition:none}
+.v-gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#viewer.has3d .v-bg,#viewer.has3d .v-floor,#viewer.has3d .v-ceil,#viewer.has3d .v-glow{display:none}
+#viewer.has3d .v-room{background:#101012}
+#viewer{position:fixed;inset:0;z-index:5;background:#0F0F0F;color:#E9E9EB;will-change:mask-image,filter;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+#viewer[hidden]{display:none}
+.v-room{position:absolute;inset:0;--chrome:1;overflow:hidden;background:#0B0B0C}
+/* 배경 공간: 표지 그림을 크게 흐려 깐 빛 + 원근이 있는 바닥과 천장 (작업물이 걸린 어두운 전시장) */
+.v-bg{position:absolute;inset:-12%;background:#1a1a1c center/cover no-repeat;filter:blur(70px) saturate(1.25) brightness(.42);transform-origin:50% 50%;will-change:transform}
+.v-floor,.v-ceil{position:absolute;left:-30%;right:-30%;height:46%;pointer-events:none;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 1px,transparent 1px 9%),linear-gradient(rgba(255,255,255,.05),transparent 70%)}
+.v-floor{bottom:-8%;transform:perspective(700px) rotateX(64deg);transform-origin:50% 100%;
+  -webkit-mask:linear-gradient(to top,#000,transparent 85%);mask:linear-gradient(to top,#000,transparent 85%)}
+.v-ceil{top:-8%;transform:perspective(700px) rotateX(-64deg);transform-origin:50% 0;opacity:.6;
+  -webkit-mask:linear-gradient(to bottom,#000,transparent 85%);mask:linear-gradient(to bottom,#000,transparent 85%)}
+.v-glow{position:absolute;left:50%;top:50%;width:90vw;height:70vh;transform:translate(-50%,-50%);pointer-events:none;
+  background:radial-gradient(closest-side,rgba(255,255,255,.10),transparent)}
+/* 창 안쪽 가장자리 그늘: 볼록한 유리 화면처럼 가장자리가 어두워진다 */
+.v-rim{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:30;
+  background:radial-gradient(closest-side,transparent 62%,rgba(120,255,190,.28) 80%,rgba(255,90,170,.18) 92%,transparent 100%)}
+.v-top{position:absolute;left:0;right:0;top:0;height:76px;padding:0 var(--pad);display:flex;align-items:center;justify-content:space-between;z-index:20;opacity:var(--chrome)}
+.v-top div{display:flex;align-items:baseline;gap:12px}
+.v-kind{color:var(--accent);font-size:14px}
+.v-title{font:500 18px/1.2 var(--display);letter-spacing:-.01em}
+.v-close{height:40px;padding:0 20px;border-radius:999px;border:1px solid rgba(233,233,235,.4);background:transparent;color:#E9E9EB;font:500 14.5px var(--body);cursor:pointer}
+.v-close:hover{background:#E9E9EB;color:#0F0F0F}
+.v-stage{position:absolute;inset:0}
+.vp{position:absolute;left:50%;top:50%;width:min(72vw,calc((100dvh - 230px) * 1.6),1180px);aspect-ratio:16/10;background:#F4F4F5;color:#0F0F0F;border-radius:6px;overflow:hidden;
+  display:grid;grid-template-columns:1fr;transition:transform .7s var(--ease),opacity .6s var(--ease);transform-origin:50% 50%;cursor:pointer;
+  box-shadow:0 40px 120px rgba(0,0,0,.55)}
+.vp.cur{cursor:default}
+.vp{transition:transform .7s var(--ease),opacity .6s var(--ease),filter .6s var(--ease)}
+.vp.has-img{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}
+.vp.is-cover.has-img{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.vp.is-thumb{grid-template-columns:1fr;cursor:pointer}
+.vp.is-thumb.cur{cursor:default}
+.vp.is-thumb .vp-img{height:100%}
+.vp-img{margin:0;min-height:0;background:#0F0F0F}
+.vp-img img{width:100%;height:100%;object-fit:cover;border-radius:0}
+.vp-blank{display:flex;align-items:flex-end;padding:clamp(16px,2.4vw,36px);color:#E9E9EB}
+.vp-blank b{font:500 clamp(22px,2.6vw,40px)/1.15 var(--display);letter-spacing:-.03em}
+.vp-txt{padding:clamp(18px,2.6vw,44px);overflow:auto;display:flex;flex-direction:column;gap:12px;font-size:clamp(13px,1vw,15.5px);line-height:1.6}
+.vp-no{font:500 13px var(--display);color:#77777c}
+.vp-txt h3{font:500 clamp(20px,2vw,30px)/1.2 var(--display);letter-spacing:-.02em}
+.vp-lead{font-size:clamp(15px,1.25vw,19px);line-height:1.5}
+.vp-txt p{color:#3a3a3e}
+.vp-txt dl{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;border-top:1px solid rgba(15,15,15,.16);padding-top:12px;margin-top:4px}
+.vp-txt dt{color:#77777c}
+.vp-nums{display:flex;flex-wrap:wrap;gap:16px 28px;margin-top:4px}
+.vp-nums b{display:block;font:400 clamp(22px,2.2vw,34px)/1.1 var(--display);letter-spacing:-.03em}
+.vp-nums span{color:#5f5f64;font-size:.92em}
+.vp-hint{color:#77777c !important;border-left:2px dashed var(--accent);padding-left:10px;font-size:.92em}
+.v-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:20;width:52px;height:52px;border-radius:999px;border:1px solid rgba(233,233,235,.35);background:rgba(15,15,15,.5);color:#E9E9EB;font-size:20px;cursor:pointer;opacity:var(--chrome)}
+.v-arrow.prev{left:var(--pad)}.v-arrow.next{right:var(--pad)}
+.v-arrow:disabled{opacity:calc(var(--chrome) * .25);cursor:default}
+.v-arrow:not(:disabled):hover{background:#E9E9EB;color:#0F0F0F}
+.v-thumbs{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);display:flex;gap:6px;z-index:20;opacity:var(--chrome)}
+.v-thumbs button{min-width:38px;height:30px;border-radius:999px;border:1px solid rgba(233,233,235,.25);background:transparent;color:#A2A2A7;font:500 12.5px var(--display);cursor:pointer}
+.v-thumbs button.on{background:#E9E9EB;color:#0F0F0F;border-color:#E9E9EB}
+@media (max-width:860px){
+  .vp{width:92vw;aspect-ratio:auto;height:calc(100dvh - 190px)}
+  .vp.has-img,.vp.is-cover.has-img{grid-template-columns:1fr;grid-template-rows:38% 1fr}
+  .v-arrow{top:auto;bottom:18px;transform:none;width:44px;height:44px}
+  .v-thumbs{bottom:28px}
+}
+@media (prefers-reduced-motion:reduce){.vp{transition:none}}
+
+@media (max-width:860px){
+  body{font-size:16px}
+  header nav{gap:18px}
+  header nav a:not(.keep){display:none}
+  .hero{height:300vh}
+  .hero .ln{white-space:normal;font-size:clamp(32px,10vw,64px)}
+  .hero .ln.l2{text-align:left}
+  .hero .foot,.visual .media,.main .grid,.subp .top,.subp .flow,.others .two,.visual .below,.resume .cols,.about .points{grid-template-columns:1fr}
+  .pgrid{grid-template-columns:1fr}
+  .petc{width:100%}
+  .index .ixhead{grid-template-columns:1fr}
+  .main .side{position:static}
+  .main .toc{display:none}
+  .chap .it{grid-template-columns:1fr;gap:6px}
+  .head dl{grid-template-columns:1fr;gap:4px 0}
+  .head dd{margin-bottom:12px}
+  .stack{height:300px}
+  .blinds{height:26vh}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none;transition:none}
+  .hero{height:auto}
+  .hero .pin{position:relative}
+  .hero .ln span{transform:none;opacity:1;transition:none}
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="#top" id="brand"></a>
+  <nav id="nav">
+    <a href="#index" class="keep">Projects</a>
+    <a href="#visual">Visual</a>
+    <a href="#about">About</a>
+    <a href="#contact" class="keep">Contact</a>
+  </nav>
+</header>
+
+<div class="darkbg" id="darkbg" aria-hidden="true"></div>
+<canvas id="gl" aria-hidden="true"></canvas>
+<canvas id="glFront" aria-hidden="true"></canvas>
+<main id="top"></main>
+
+<script src="content.js"></script>
+<script>
+/* =========================================================
+   1. 내용 그리기 (content.js → 화면)
+   ========================================================= */
+const D = window.PORTFOLIO;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const has = v => Array.isArray(v) ? v.length > 0 : !!(v && String(v).trim());
+const when = (v, html) => has(v) ? html : '';
+const hint = text => D.draft ? `<p class="hint">작성 안내: ${esc(text)}</p>` : '';
+const orHint = (v, html, text) => has(v) ? html : hint(text);
+const links = list => (list || []).filter(l => has(l.url)).map(l => `<a class="tl" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join('');
+const nums = list => has(list) ? `<div class="nums">${list.map(r => `<div><b>${esc(r.value)}</b><span>${esc(r.label)}</span></div>`).join('')}</div>` : '';
+const fig = (src, cap, alt) => when(src, `<figure><img src="${esc(src)}" alt="${esc(alt || cap || '')}" loading="lazy">${when(cap, `<figcaption>${esc(cap)}</figcaption>`)}</figure>`);
+
+/* 프로젝트 첫머리: 한 줄 정의 → 키워드 → 기간과 역할 → 기술 → 성과 두 가지 */
+function head(p, level = 'h2') {
+  const meta = [p.period, p.team, p.role].filter(has).join(' / ');
+  const row = (label, v, guide, bold) => has(v) ? `<dt>${label}</dt><dd>${bold ? `<b>${esc(v)}</b>` : esc(v)}</dd>` : (D.draft ? `<dt>${label}</dt><dd>${hint(guide)}</dd>` : '');
+  return `<div class="head">
+    <${level}>${esc(p.title)}</${level}>
+    ${orHint(p.oneLine, `<p class="one">${esc(p.oneLine)}</p>`, '한 줄 정의. 기술 이름보다 해결한 문제를 먼저.')}
+    ${when(p.keywords, `<div class="kws">${(p.keywords || []).map(k => `<span class="kw">${esc(k)}</span>`).join('')}</div>`)}
+    <dl>
+      ${row('기간과 역할', meta, '기간, 팀 규모, 내가 맡은 범위.')}
+      ${has(p.tags) ? `<dt>기술</dt><dd>${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</dd>` : ''}
+      ${row('구축 성과', p.built, '[대상과 문제]를 [핵심 기술과 설계]로 [구현]해 [달성한 상태].')}
+      ${row('개선 성과', p.improved, '[문제]를 [조치]로 해결해 [지표] 달성. 숫자 1개 이상.', true)}
+    </dl>
+    ${has(links(p.links)) ? `<div class="lk">${links(p.links)}</div>` : ''}
+  </div>`;
+}
+
+document.title = `${D.name} | ${D.role}`;
+document.getElementById('brand').textContent = D.name;
+
+const lines = has(D.heroLines) ? D.heroLines : [D.headline];
+const hero = `
+<section class="hero" id="hero">
+  <div class="pin">
+    <h1 class="lines">${lines.map((l, i) => `<span class="ln l${i + 1}" data-dir="${i % 2 ? 1 : -1}"><span style="--from:${i % 2 ? '18vw' : '-18vw'}">${esc(l)}</span></span>`).join('')}</h1>
+    <div class="foot">
+      <div><div class="role">${esc(D.name)} / ${esc(D.role)}</div><p>${esc(D.intro)}</p></div>
+      <div class="cta">
+        <a class="btn pri" href="#index">View projects</a>
+        ${when(D.deckUrl, `<a class="btn ghost" href="${esc(D.deckUrl)}" target="_blank" rel="noopener">Portfolio PDF</a>`)}
+        ${when(D.resumeUrl, `<a class="btn ghost" href="${esc(D.resumeUrl)}" target="_blank" rel="noopener">Resume PDF</a>`)}
+      </div>
+    </div>
+  </div>
+</section>`;
+
+const M = D.main, SUBS = [].concat(D.subs || D.sub || []), O = D.others || [];
+const all = [['메인', M], ...SUBS.map(s => ['서브', s]), ...O.map(o => ['기타', o])].filter(x => x[1]);
+const coverOf = p => p.image || (p.chapters || []).map(c => c.image).find(has) || '';
+/* 프로젝트 그리드: 왼쪽에 메인 1개(크게), 오른쪽 위에 서브 2개(중간), 오른쪽 아래에 기타 2개(작게) */
+const V0 = D.visual;
+const gridItems = [
+  ...(M ? [{kind: 'Main', p: M}] : []),
+  ...SUBS.slice(0, 2).map(p => ({kind: 'Sub', p})),
+  ...O.slice(0, 2).map(p => ({kind: 'Other', p}))
+];
+if (gridItems.filter(g => g.kind === 'Other').length < 2 && V0) {
+  gridItems.push({kind: 'Other', p: {id: 'visual', title: V0.title, oneLine: V0.desc, image: V0.image, period: V0.award ? V0.award.rank : ''}});
+}
+/* 천으로 그릴 이미지 목록: 그리드에 내려앉는 프로젝트 대표 이미지가 앞, 나머지 작업물이 뒤 (띠와 구에는 전부 쓰인다) */
+const gallery = (D.gallery || []).map(g => typeof g === 'string' ? {src: g} : g);
+const works = [];
+gridItems.forEach(g => { g.cover = coverOf(g.p); if (has(g.cover)) works.push({src: g.cover}); });
+gallery.forEach(g => { if (!works.some(w => w.src === g.src)) works.push(g); });
+window.__works = works;
+const cellHtml = (g, i) => `<a class="cell k-${g.kind === 'Main' ? 'main' : g.kind === 'Sub' ? 'sub' : 'etc'}" href="#${esc(g.p.id)}" data-i="${i}">
+  <span class="ph ${has(g.cover) ? '' : 'noimg'}" data-sheet data-order="${i}" ${has(g.cover) ? `data-src="${esc(g.cover)}"` : `data-title="${esc(g.p.title)}"`}>${has(g.cover) ? `<img src="${esc(g.cover)}" alt="${esc(g.p.title)}" loading="lazy">` : `<b>${esc(g.p.title)}</b>`}</span>
+  <span class="ct"><i>${g.kind}</i>${esc(g.p.title)}</span><span class="cs">${esc(g.p.period || g.p.status || '')}</span>
+</a>`;
+const gi = gridItems.map((g, i) => ({g, i}));
+const index = `
+<section class="index" id="index">
+  <div class="wrap">
+    <div class="ixhead">
+      <h2 id="hovT"></h2>
+      <p id="hovD"></p>
+      <a class="btn sm" id="hovL" href="#index">See full</a>
+    </div>
+    <div class="pgrid" id="cells">
+      <div class="pmain">${gi.filter(x => x.g.kind === 'Main').map(x => cellHtml(x.g, x.i)).join('')}</div>
+      <div class="pside">
+        <div class="psub">${gi.filter(x => x.g.kind === 'Sub').map(x => cellHtml(x.g, x.i)).join('')}</div>
+        <div class="petc">${gi.filter(x => x.g.kind === 'Other').map(x => cellHtml(x.g, x.i)).join('')}</div>
+      </div>
+    </div>
+  </div>
+</section>`;
+
+const chapter = (c, i) => `
+<div class="chap rv" id="ch-${i}">
+  <h3><span>0${i + 1}</span>${esc(c.name)}</h3>
+  ${when(c.claim, `<p class="claim">${esc(c.claim)}</p>`)}
+  ${when(c.body, `<p class="body">${esc(c.body)}</p>`)}
+  ${has(c.layers) ? `<div class="stack" aria-hidden="true"><div class="planes">${c.layers.map((l, n) => `<div class="plane" style="--n:${n}">${esc(l)}</div>`).join('')}</div></div>` : ''}
+  ${has(c.items) ? `<div class="items">${c.items.map(it => `<div class="it"><b>${esc(it.label)}</b><p>${esc(it.text)}</p></div>`).join('')}</div>` : ''}
+  ${nums(c.results)}
+  ${fig(c.image, c.caption)}
+  ${!has(c.claim) || !has(c.items) && !has(c.body) ? hint(c.guide) : ''}
+</div>`;
+
+const mainSec = M ? `
+<section class="main" id="${esc(M.id)}">
+  <div class="wrap grid">
+    <div class="side rv">
+      ${when(M.status, `<span class="status">${esc(M.status)}</span>`)}
+      <div class="toc">${M.chapters.map((c, i) => `<a href="#ch-${i}"><span>0${i + 1}</span>${esc(c.name)}</a>`).join('')}</div>
+    </div>
+    <div>
+      <div class="rv">${head(M)}</div>
+      ${M.chapters.map(chapter).join('')}
+    </div>
+  </div>
+</section>` : '';
+
+const subSec = SUBS.map(S => `
+<section class="subp" id="${esc(S.id)}">
+  <div class="wrap">
+    <div class="top">
+      <div class="rv">${head(S)}</div>
+      <div class="rv" style="--i:1">${fig(S.image, S.caption, S.title)}</div>
+    </div>
+    ${has(S.process) ? `<div class="flow">${S.process.map((s, i) => `<div class="st rv" style="--i:${i}"><b>${esc(s.step)}</b><p>${esc(s.text)}</p></div>`).join('')}</div>` : ''}
+    <div class="rv">${nums(S.results)}</div>
+  </div>
+</section>`).join('');
+
+const othersSec = has(O) ? `
+<section class="others" id="others">
+  <div class="wrap">
+    <h2 class="rv">Other projects</h2>
+    <div class="two">
+      ${O.map((p, i) => `<div class="rv" style="--i:${i}" id="${esc(p.id)}">${head(p, 'h3')}${fig(p.image, p.caption, p.title)}</div>`).join('')}
+    </div>
+  </div>
+</section>` : '';
+
+const V = D.visual;
+const visual = `
+<section class="visual" id="visual">
+  <div class="wrap">
+    <h2 class="rv">${esc(V.title)}</h2>
+    <div class="media">
+      ${when(V.image, `<figure class="rv"><img src="${esc(V.image)}" alt="${esc(V.imageAlt)}" loading="lazy"><figcaption>${esc(V.imageAlt || '')}</figcaption></figure>`)}
+      ${when(V.awardImage, `<figure class="rv cert" style="--i:1"><img src="${esc(V.awardImage)}" alt="${esc(V.awardImageAlt || '수상 증서')}" loading="lazy"><figcaption>${esc(V.awardImageAlt || '')}</figcaption></figure>`)}
+    </div>
+    <div class="below">
+      <div class="rv"><div class="rank">${esc(V.award.rank)}</div><div class="aw"><b>${esc(V.award.name)}</b><span>${esc(V.award.field)}</span></div></div>
+      <div class="txt rv" style="--i:1"><p>${esc(V.desc)}</p>${links(V.links)}</div>
+    </div>
+  </div>
+</section>`;
+
+const blinds = `<div class="blinds" aria-hidden="true">${Array.from({length: 12}, (_, i) => `<i style="--k:${(i * 5) % 12}"></i>`).join('')}</div>`;
+
+const C = D.contact;
+const darkPart = `
+<div class="dark">
+  <section class="about" id="about">
+    <div id="sphereAnchor" aria-hidden="true"></div>
+    <div class="wrap">
+      <h2 class="rv" style="margin-bottom:clamp(24px,3vw,40px)">About</h2>
+      <p class="statement rv">${esc(D.about.statement)}</p>
+      <div class="points">
+        ${D.about.points.map((p, i) => `<div class="pt rv" style="--i:${i}"><b>${esc(p.term)}</b><p>${esc(p.desc)}</p></div>`).join('')}
+      </div>
+      <div class="resume">
+        <div class="rh rv"><h3>Resume</h3>${when(D.deckUrl, `<a class="btn ghost" href="${esc(D.deckUrl)}" target="_blank" rel="noopener">Portfolio PDF</a>`)}${when(D.resumeUrl, `<a class="btn ghost" href="${esc(D.resumeUrl)}" target="_blank" rel="noopener">Resume PDF</a>`)}${!has(D.resumeUrl) ? hint('content.js 의 resumeUrl 에 이력서 PDF 경로를 넣으면 여기에 내려받기 버튼이 생깁니다.') : ''}</div>
+        <div class="cols">
+          <div class="rv"><h4>Experience</h4>
+            ${D.career.map(c => `<div class="cr"><span class="pd">${esc(c.period)}</span><div><b>${esc(c.title)}</b><p>${esc(c.desc)}</p></div></div>`).join('')}
+          </div>
+          <div class="rv" style="--i:1"><h4>Skills</h4>
+            ${D.skills.map(s => `<div class="sk"><b>${esc(s.group)}</b><p>${esc(s.items.join(', '))}</p></div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <p class="msg rv">${esc(C.message)}</p>
+      ${when(C.email, `<a class="mail rv" style="--i:1" href="mailto:${esc(C.email)}">${esc(C.email)}</a>`)}
+      <div class="lks rv" style="--i:2">${links(C.links)}</div>
+    </div>
+  </section>
+  <footer><span>${esc(D.name)}${when(D.nameKo, ' ' + esc(D.nameKo))}</span><span>화면은 AI와 함께 제작했습니다.</span></footer>
+</div>`;
+
+document.getElementById('top').innerHTML = hero + index + visual + blinds + darkPart;   // 프로젝트 상세는 카드를 누르면 열리는 뷰어(viewer.js)에서 읽는다
+
+/* =========================================================
+   2. 등장 모션과 현재 위치 표시 (스크롤 이벤트 대신 관찰자 사용)
+   ========================================================= */
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold: .08});
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+requestAnimationFrame(() => document.getElementById('hero').classList.add('ready'));
+
+const navLinks = [...document.querySelectorAll('#nav a')];
+const projectIds = new Set(['index', 'others', ...all.map(x => x[1].id)]);
+const mid = {rootMargin: '-45% 0px -45% 0px'};
+const secIo = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  const id = projectIds.has(e.target.id) ? 'index' : e.target.id;
+  navLinks.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + id));
+}), mid);
+document.querySelectorAll('section').forEach(s => secIo.observe(s));
+const tocLinks = [...document.querySelectorAll('.toc a')];
+const chIo = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) tocLinks.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id));
+}), mid);
+document.querySelectorAll('.chap').forEach(c => chIo.observe(c));
+
+/* 그리드 위 설명: 마우스를 올린 작업의 번호, 이름, 한 줄 설명을 보여 준다 */
+function showWork(i) {
+  const g = gridItems[i]; if (!g) return;
+  document.getElementById('hovT').innerHTML = `<span>[${String(i + 1).padStart(2, '0')}]</span>${esc(g.p.title || '')}`;
+  document.getElementById('hovD').textContent = g.p.oneLine || g.p.summary || g.p.status || '';
+  document.getElementById('hovL').href = '#' + g.p.id;
+}
+showWork(0);
+document.querySelectorAll('.cell').forEach(c => { c.addEventListener('pointerenter', () => showWork(+c.dataset.i)); c.addEventListener('focus', () => showWork(+c.dataset.i)); });
+
+/* 어두운 바탕은 캔버스보다 아래층에 따로 깔아, 구가 글자 뒤 어두운 바탕 위에 보이게 한다 */
+const darkEl = document.querySelector('.dark'), darkBg = document.getElementById('darkbg');
+function fitDark() { const r = darkEl.getBoundingClientRect(); darkBg.style.top = (r.top + scrollY) + 'px'; darkBg.style.height = r.height + 'px'; }
+fitDark(); new ResizeObserver(fitDark).observe(document.body); addEventListener('load', fitDark);
+
+/* =========================================================
+   3. 작업물 장면 (three.js) 은 scene.js 에 있다
+   - 파일을 더블클릭해 열면(file://) 브라우저가 이미지를 3D 에 올리는 것을 막는다.
+     그때는 그리드에 일반 이미지를 보여 주고, "포트폴리오 열기.bat" 로 열면 전부 동작한다.
+   ========================================================= */
+if (location.protocol === 'file:') document.documentElement.classList.add('nogl');
+</script>
+<script src="viewer.js"></script>
+<script type="module">
+if (location.protocol !== 'file:') import('./scene.js').catch(() => document.documentElement.classList.add('nogl'));
+if (location.protocol !== 'file:') import('./viewer3d.js').catch(() => {});
+</script>
+</body>
+</html>
