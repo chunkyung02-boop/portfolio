@@ -197,7 +197,7 @@ figcaption{color:var(--sub);font-size:14px;margin-top:10px}
 
 /* 첫 화면 끝 ~ 프로젝트 사이: 보라색 막대가 솟았다가 얇은 구분선으로 눌려 남는다 */
 .wave{display:grid;grid-template-columns:repeat(12,1fr);height:34vh;margin-top:-34vh;position:relative;z-index:3;pointer-events:none}
-.wave i{background:var(--accent);transform-origin:bottom;transform:scaleY(0);display:block}
+.wave i{background:var(--accent);box-shadow:1px 0 0 var(--accent);transform-origin:bottom;transform:scaleY(0);display:block}   /* 막대 사이 이음매가 비치지 않게 1px 덮는다 */
 @supports (animation-timeline:view()){
   @media (prefers-reduced-motion:no-preference){
     .wave i{animation:wave linear both;animation-timeline:view();animation-range:entry calc(var(--k)*4%) exit calc(60% + var(--k)*3%)}
