@@ -97,7 +97,8 @@ figcaption{color:var(--sub);font-size:14px;margin-top:10px}
 /* ---------- 프로젝트 목록: 작업물 그리드 (칸은 자리만 잡고, 이미지는 캔버스의 천이 채운다) ---------- */
 .index .ixhead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:32px;align-items:start;margin-bottom:clamp(22px,3vw,40px)}
 .index .ixhead h2 span{font-size:.62em;color:var(--sub);margin-right:8px}
-.index .ixhead p{color:var(--sub);font-size:15.5px;max-width:26em;min-height:3.2em}
+.index .ixhead p{color:var(--sub);font-size:15.5px;line-height:1.7;max-width:26em;height:3.4em;overflow:hidden}   /* 설명이 1줄이든 2줄이든 칸 높이를 고정해 아래 카드가 움직이지 않게 한다 */
+.index .ixhead h2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:1.3em}
 .btn.sm{height:40px;padding:0 20px;font-size:14.5px;background:var(--text);color:var(--bg)}
 .btn.sm:hover{background:var(--accent);color:#fff}
 .hov b{display:block;font:500 clamp(20px,2.2vw,30px)/1.2 var(--body);letter-spacing:-.02em}
