@@ -50,8 +50,9 @@ header .brand{font:500 17px var(--display);text-decoration:none;letter-spacing:-
 header nav{display:flex;gap:28px}
 header nav a{text-decoration:none;font-size:15px;opacity:.7;transition:opacity .3s}
 header nav a:hover,header nav a.on{opacity:1}
-header nav a.ext{opacity:1;color:#fff;background:var(--accent);padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px;transition:filter .2s,transform .2s}
-header nav a.ext:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.extnav{position:fixed;z-index:5;top:0;right:var(--pad);height:68px;display:flex;align-items:center;gap:28px}
+.extnav a{text-decoration:none;font-size:15px;font-weight:600;color:var(--accent);transition:opacity .25s}
+.extnav a:hover{opacity:.65}
 
 header nav a[href="#index"]{max-width:120px;overflow:hidden;white-space:nowrap;transition:max-width .45s,opacity .35s,margin .45s}
 header nav.in-hero a[href="#index"]{max-width:0;opacity:0 !important;margin-right:-28px;pointer-events:none}
@@ -315,6 +316,8 @@ html.v-open{overscroll-behavior:none}
   body{font-size:16px}
   header nav{gap:18px}
   header nav a:not(.keep){display:none}
+  .extnav{display:none}
+  header nav{padding-right:0!important}
   .hero{height:250vh}
   .hero .ln{white-space:normal;font-size:clamp(32px,10vw,64px)}
   .hero .ln.l2{text-align:left}
@@ -549,8 +552,11 @@ const darkPart = `
 </div>`;
 
 document.getElementById('top').innerHTML = hero + index + visual + blinds + darkPart;
-document.getElementById('nav').insertAdjacentHTML('beforeend',
-  [[D.deckUrl, 'Portfolio PDF'], [D.resumeUrl, 'Resume PDF']].filter(x => x[0]).map(x => `<a class="ext" href="${esc(x[0])}" target="_blank" rel="noopener">${x[1]} ↗</a>`).join(''));   // 프로젝트 상세는 카드를 누르면 열리는 뷰어(viewer.js)에서 읽는다
+{ const ex = document.createElement('div'); ex.className = 'extnav';
+  ex.innerHTML = [[D.deckUrl, 'Portfolio PDF'], [D.resumeUrl, 'Resume PDF']].filter(x => x[0]).map(x => `<a href="${esc(x[0])}" target="_blank" rel="noopener">${x[1]} ↗</a>`).join('');
+  document.body.appendChild(ex);
+  const pad = () => { document.getElementById('nav').style.paddingRight = (ex.offsetWidth + 28) + 'px'; };
+  pad(); addEventListener('resize', pad); document.fonts && document.fonts.ready.then(pad); }   // 프로젝트 상세는 카드를 누르면 열리는 뷰어(viewer.js)에서 읽는다
 
 /* =========================================================
    2. 등장 모션과 현재 위치 표시 (스크롤 이벤트 대신 관찰자 사용)
