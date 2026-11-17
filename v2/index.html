@@ -102,7 +102,7 @@ figcaption{color:var(--sub);font-size:14px;margin-top:10px}
 
 /* ---------- 프로젝트 목록: 작업물 그리드 (칸은 자리만 잡고, 이미지는 캔버스의 천이 채운다) ---------- */
 .index .ixhead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:32px;align-items:start;margin-bottom:clamp(22px,3vw,40px)}
-.index .ixhead h2 span{font-size:.62em;color:var(--sub);margin-right:8px}
+.index .ixhead h2 span{font-size:.62em;color:var(--accent);margin-right:8px}
 .index .ixhead p{color:var(--sub);font-size:15.5px;line-height:1.7;max-width:26em;height:3.4em;overflow:hidden}   /* 설명이 1줄이든 2줄이든 칸 높이를 고정해 아래 카드가 움직이지 않게 한다 */
 .index .ixhead h2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:1.3em}
 #hovL{justify-self:start}
@@ -229,6 +229,7 @@ figcaption{color:var(--sub);font-size:14px;margin-top:10px}
 .resume h4{font-size:16px;font-weight:500;color:var(--sub);padding-bottom:14px;border-bottom:1px solid var(--line)}
 .cr{display:grid;grid-template-columns:96px 1fr;gap:16px;padding:20px 0}
 .cr .pd{color:var(--sub);font:500 15px var(--display);padding-top:3px}
+.cr.now .pd{color:#A58BFF}   /* 어두운 바탕에서는 대비를 위해 밝은 보라 */
 .cr b{font-weight:500;font-size:18px}
 .cr p{color:var(--sub);font-size:15.5px}
 .sk{padding:20px 0}
@@ -238,7 +239,7 @@ figcaption{color:var(--sub);font-size:14px;margin-top:10px}
 /* ---------- 연락 ---------- */
 .contact{min-height:78dvh;display:flex;align-items:center}
 .contact .msg{font:400 clamp(24px,3.4vw,50px)/1.25 var(--body);letter-spacing:-.035em;max-width:16em}
-.contact .mail{display:inline-block;margin-top:40px;font:500 clamp(20px,2.6vw,34px) var(--display);text-decoration:none;border-bottom:1px solid var(--text);transition:color .3s,border-color .3s}
+.contact .mail{display:inline-block;margin-top:40px;font:500 clamp(20px,2.6vw,34px) var(--display);text-decoration:none;border-bottom:1px solid #A58BFF;transition:color .3s,border-color .3s}
 .contact .mail:hover{color:var(--accent);border-color:var(--accent)}
 .contact .lks{margin-top:34px}
 footer{padding:26px var(--pad);color:var(--sub);font-size:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -537,7 +538,7 @@ const darkPart = `
         <div class="rh rv"><h3>Resume</h3><div class="rb">${when(D.deckUrl, `<a class="btn ghost" href="${esc(D.deckUrl)}" target="_blank" rel="noopener">Portfolio PDF</a>`)}${when(D.resumeUrl, `<a class="btn ghost" href="${esc(D.resumeUrl)}" target="_blank" rel="noopener">Resume PDF</a>`)}</div>${!has(D.resumeUrl) ? hint('content.js 의 resumeUrl 에 이력서 PDF 경로를 넣으면 여기에 내려받기 버튼이 생깁니다.') : ''}</div>
         <div class="cols">
           <div class="rv"><h4>Experience</h4>
-            ${D.career.map(c => `<div class="cr"><span class="pd">${esc(c.period)}</span><div><b>${esc(c.title)}</b><p>${esc(c.desc)}</p></div></div>`).join('')}
+            ${D.career.map((c, i) => `<div class="cr${i === 0 ? ' now' : ''}"><span class="pd">${esc(c.period)}</span><div><b>${esc(c.title)}</b><p>${esc(c.desc)}</p></div></div>`).join('')}
           </div>
           <div class="rv" style="--i:1"><h4>Skills</h4>
             ${D.skills.map(s => `<div class="sk"><b>${esc(s.group)}</b><p>${esc(s.items.join(', '))}</p></div>`).join('')}
