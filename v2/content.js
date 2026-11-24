@@ -25,9 +25,9 @@ window.PORTFOLIO = {
   /* ---------- 기본 정보 ---------- */
   name: "Kyungmin Jeon",
   nameKo: "전경민",
-  role: "Product Engineer",
-  headline: "시각 감각으로 설계하는 AI 프로덕트",
-  intro: "사용자가 막히는 순간을 찾아 AI로 빠르게 만들고, 직접 써 보며 사용 경험을 고치는 프로덕트 엔지니어입니다.",
+  role: "AI Engineer · Product Engineer",
+  headline: "AI 모델을 검증하고, 서비스로 완성합니다",
+  intro: "모델을 학습·평가해 고르는 AI 엔지니어링과, 사용자가 막히는 순간에 맞춰 서비스로 만드는 프로덕트 엔지니어링을 함께 합니다.",
   deckUrl: "https://chunkyung02-boop.github.io/portfolio/portfolio-deck.pdf",   // 포트폴리오 PDF (27장)
   resumeUrl: "resume.pdf",        // 이력서 PDF (공개용, 전화번호 제외)
   heroLines: ["Designed with a trained eye", "Built end to end with AI"],   // 첫 화면 큰 글자 두 줄
@@ -46,7 +46,7 @@ window.PORTFOLIO = {
 
   /* ---------- 소개 ---------- */
   about: {
-    statement: "화면의 완성도를 보는 눈과, AI로 끝까지 만들어 내는 방식을 함께 가진 사람입니다.",
+    statement: "모델은 엔지니어의 기준으로 숫자로 검증하고,\n사용자의 막힘은 기획자의 눈으로 봅니다.",
     points: [
       { term: "보는 눈", desc: "CG 합성 작업 2년. 한 프레임 안에서 빛, 색, 경계가 어긋난 곳을 찾아 맞추는 일을 했습니다. Rookie Awards 2026 Visual Effects 부문 Rank A." },
       { term: "만드는 방식", desc: "발표 자료와 웹 서비스를 모두 AI로 제작했습니다. 직접 맡은 일은 기획 원문 작성, 시험 데이터와 평가 기준 설계, 결과 검수입니다." },
@@ -122,12 +122,12 @@ window.PORTFOLIO = {
     tags: ["VLM", "LLM", "FastAPI", "프롬프트 버전 관리"],
     keywords: ["평가 설계", "모델 선정", "비용 절감"],
     built: "재료 판정, 대체 재료 안내, 조리 단계 진행을 로컬 모델 우선 구조로 구현해 말로 진행하는 요리 안내 서비스를 완성",
-    improved: "1,459문제 시험지로 모델 15종을 비교해 로컬 판정 91.2%를 확보하고, API 재확인 호출을 589번에서 61번으로 줄임",
+    improved: "모델 15종을 비교해 재료 판정 정답률을 86%에서 92%로 올리고(410문제), 전체 1,459문제에서 91.2%를 확보했으며, API 재확인 호출을 589번에서 61번으로 줄임",
     links: [],
     process: [
       { step: "문제", text: "정확한 API 모델은 비용과 속도, 사진 외부 전송이 걸리고 로컬 모델만 쓰면 정확도가 걱정이었습니다." },
       { step: "조치", text: "정답지를 먼저 쓴 1,459문제 시험지를 만들고 로컬 모델 15종을 같은 조건으로 비교했습니다. 로컬이 먼저 판정하고 어려운 것만 API가 재확인하게 했습니다." },
-      { step: "결과", text: "로컬 판정 91.2%. API 재확인 호출 589번에서 61번으로 감소." }
+      { step: "결과", text: "정답률 86% → 92%(410문제), 전체 1,459문제 91.2%. API 재확인 호출 589번에서 61번으로 감소." }
     ],
     results: [
       { value: "91.2%", label: "로컬 모델 재료 판정 (1,459문제)" },
@@ -228,9 +228,15 @@ window.PORTFOLIO = {
     { group: "개발", items: ["Python", "FastAPI", "React", "PyTorch"] }
   ],
 
+  /* ---------- 교육 · 수료 ---------- */
+  education: [
+    { period: "2026.11", title: "AI Fluency: Framework and foundations", desc: "Claude Academy 수료 배지", url: "https://academy.claude.com/verify/80ab8555f143889a9ef3e8610e2499a0" },
+    { period: "2026.11", title: "Hugging Face Agents Course", desc: "Certificate of Excellence · 최종 챌린지 통과 수료", url: "assets/hf_agents_course_certificate.webp" }
+  ],
+
   /* ---------- 연락 ---------- */
   contact: {
-    message: "현장에서 AI 경험을 설계할 자리를 찾고 있습니다.",
+    message: "AI 모델을 서비스로 만들고, 실사용으로 검증하는 자리를 찾고 있습니다.",
     email: "chunkyung02@gmail.com",
     links: [
       { label: "GitHub", url: "https://github.com/chunkyung02-boop" },

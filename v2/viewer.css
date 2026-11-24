@@ -1,0 +1,78 @@
+/* ---------- 프로젝트 뷰어 (viewer.js) ----------
+   층: 페이지 위 전체 화면(5). 어두운 방 안에 가운데 장 하나를 크게, 앞뒤 장을 양옆에 비스듬히 놓는다.
+   규칙: 장(16:10 문서 면)은 PDF 한 장을 뜻하는 면이라 판 형태를 썼다 */
+/* 뷰어가 열려도 페이지 스크롤바는 그대로 둔다 (없애면 화면 폭이 바뀌어 레이아웃이 흔들린다). 대신 뒤 페이지가 스크롤되지 않게 이벤트를 막는다 */
+html.v-open{overscroll-behavior:none}
+#viewer.anim .vp{transition:none}
+.v-gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#viewer.has3d .v-bg,#viewer.has3d .v-floor,#viewer.has3d .v-ceil,#viewer.has3d .v-glow{display:none}
+#viewer.has3d .v-room{background:#101012}
+#viewer{position:fixed;inset:0;z-index:5;background:#0F0F0F;color:#E9E9EB;will-change:mask-image,filter;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+#viewer[hidden]{display:none}
+.v-room{position:absolute;inset:0;--chrome:1;overflow:hidden;background:#0B0B0C}
+/* 배경 공간: 표지 그림을 크게 흐려 깐 빛 + 원근이 있는 바닥과 천장 (작업물이 걸린 어두운 전시장) */
+.v-bg{position:absolute;inset:-12%;background:#1a1a1c center/cover no-repeat;filter:blur(70px) saturate(1.25) brightness(.42);transform-origin:50% 50%;will-change:transform}
+.v-floor,.v-ceil{position:absolute;left:-30%;right:-30%;height:46%;pointer-events:none;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 1px,transparent 1px 9%),linear-gradient(rgba(255,255,255,.05),transparent 70%)}
+.v-floor{bottom:-8%;transform:perspective(700px) rotateX(64deg);transform-origin:50% 100%;
+  -webkit-mask:linear-gradient(to top,#000,transparent 85%);mask:linear-gradient(to top,#000,transparent 85%)}
+.v-ceil{top:-8%;transform:perspective(700px) rotateX(-64deg);transform-origin:50% 0;opacity:.6;
+  -webkit-mask:linear-gradient(to bottom,#000,transparent 85%);mask:linear-gradient(to bottom,#000,transparent 85%)}
+.v-glow{position:absolute;left:50%;top:50%;width:90vw;height:70vh;transform:translate(-50%,-50%);pointer-events:none;
+  background:radial-gradient(closest-side,rgba(255,255,255,.10),transparent)}
+/* 창 안쪽 가장자리 그늘: 볼록한 유리 화면처럼 가장자리가 어두워진다 */
+.v-rim{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:30;
+  background:radial-gradient(closest-side,transparent 62%,rgba(120,255,190,.28) 80%,rgba(255,90,170,.18) 92%,transparent 100%)}
+.v-top{position:absolute;left:0;right:0;top:0;height:76px;padding:0 var(--pad);display:flex;align-items:center;justify-content:space-between;z-index:20;opacity:var(--chrome)}
+.v-top div{display:flex;align-items:baseline;gap:12px}
+.v-kind{color:var(--accent);font-size:14px}
+.v-title{font:500 18px/1.2 var(--display);letter-spacing:-.01em}
+.v-close{height:40px;padding:0 20px;border-radius:999px;border:1px solid rgba(233,233,235,.4);background:transparent;color:#E9E9EB;font:500 14.5px var(--body);cursor:pointer}
+.v-close:hover{background:#E9E9EB;color:#0F0F0F}
+.v-stage{position:absolute;inset:0}
+.vp{position:absolute;left:50%;top:50%;width:min(72vw,calc((100dvh - 230px) * 1.6),1180px);aspect-ratio:16/10;background:#F4F4F5;color:#0F0F0F;border-radius:6px;overflow:hidden;
+  display:grid;grid-template-columns:1fr;transition:transform .7s var(--ease),opacity .6s var(--ease);transform-origin:50% 50%;cursor:pointer;
+  box-shadow:0 40px 120px rgba(0,0,0,.55)}
+.vp.cur{cursor:default}
+.vp{transition:transform .7s var(--ease),opacity .6s var(--ease),filter .6s var(--ease)}
+.vp.has-img{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}
+.vp.is-cover.has-img{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.vp.is-thumb{grid-template-columns:1fr;cursor:pointer}
+.vp.is-thumb.cur{cursor:default}
+.vp.is-thumb .vp-img{height:100%}
+.vp-img{margin:0;min-height:0;background:#0F0F0F}
+.vp-img img{width:100%;height:100%;object-fit:cover;border-radius:0}
+.vp-blank{display:flex;align-items:flex-end;padding:clamp(16px,2.4vw,36px);color:#E9E9EB}
+.vp-blank b{font:500 clamp(22px,2.6vw,40px)/1.15 var(--display);letter-spacing:-.03em}
+.vp-txt{padding:clamp(18px,2.6vw,44px);overflow:auto;display:flex;flex-direction:column;gap:12px;font-size:clamp(13px,1vw,15.5px);line-height:1.6}
+.vp-no{font:500 13px var(--display);color:#77777c}
+.vp-txt h3{font:500 clamp(20px,2vw,30px)/1.2 var(--display);letter-spacing:-.02em}
+.vp-lead{font-size:clamp(15px,1.25vw,19px);line-height:1.5}
+.vp-txt p{color:#3a3a3e}
+.vp-txt dl{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;border-top:1px solid rgba(15,15,15,.16);padding-top:12px;margin-top:4px}
+.vp-txt dt{color:#77777c}
+.vp-nums{display:flex;flex-wrap:wrap;gap:16px 28px;margin-top:4px}
+.vp-nums b{display:block;font:400 clamp(22px,2.2vw,34px)/1.1 var(--display);letter-spacing:-.03em}
+.vp-nums span{color:#5f5f64;font-size:.92em}
+.vp-hint{color:#77777c !important;border-left:2px dashed var(--accent);padding-left:10px;font-size:.92em}
+.v-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:20;width:52px;height:52px;border-radius:999px;border:1px solid rgba(233,233,235,.35);background:rgba(15,15,15,.5);color:#E9E9EB;font-size:20px;cursor:pointer;opacity:var(--chrome)}
+.v-arrow.prev{left:var(--pad)}.v-arrow.next{right:var(--pad)}
+.v-arrow:disabled{opacity:calc(var(--chrome) * .25);cursor:default}
+.v-arrow:not(:disabled):hover{background:#E9E9EB;color:#0F0F0F}
+.v-thumbs{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);display:flex;gap:6px;z-index:20;opacity:var(--chrome)}
+.v-thumbs button{min-width:38px;height:30px;border-radius:999px;border:1px solid rgba(233,233,235,.25);background:transparent;color:#A2A2A7;font:500 12.5px var(--display);cursor:pointer}
+.v-thumbs button.on{background:#E9E9EB;color:#0F0F0F;border-color:#E9E9EB}
+@media (max-width:860px){
+  .vp{width:92vw;aspect-ratio:auto;height:calc(100dvh - 190px)}
+  .vp.has-img,.vp.is-cover.has-img{grid-template-columns:1fr;grid-template-rows:38% 1fr}
+  .v-arrow{top:auto;bottom:18px;transform:none;width:44px;height:44px}
+  .v-thumbs{bottom:28px}
+}
+@media (prefers-reduced-motion:reduce){.vp{transition:none}}
+
+
+#viewer {--pad:var(--gutter);--display:inherit;--body:inherit;--accent:#8754ff;--ease:cubic-bezier(.2,.7,.2,1);z-index:400}
+#viewer .v-top {border:0;mix-blend-mode:normal}
+#viewer .vp {padding:0}
+#viewer .vp-img img {display:block;max-width:100%}
+#viewer .vp-txt dl,#viewer .vp-txt dd {margin-left:0}

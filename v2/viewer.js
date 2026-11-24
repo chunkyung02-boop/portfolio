@@ -9,9 +9,9 @@
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
   const has = v => Array.isArray(v) ? v.length > 0 : !!(v && String(v).trim());
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const all = [D.main, ...[].concat(D.subs || []), ...(D.others || [])].filter(Boolean);
-  const kindOf = p => p === D.main ? 'Main' : (D.subs || []).includes(p) ? 'Sub' : 'Other';
-  const coverOf = p => p.image || (p.chapters || []).map(c => c.image).find(has) || '';
+  const all = window.portfolioViewerProjects || [D.main, ...[].concat(D.subs || []), ...(D.others || [])].filter(Boolean);
+  const kindOf = p => p === all[0] ? 'Main' : (D.subs || []).includes(p) ? 'Sub' : 'Other';
+  const coverOf = p => p.viewerCover || p.image || (p.chapters || []).map(c => c.image).find(has) || '';
 
   /* ---------- 장 만들기 ---------- */
   /* 첫 장은 항상 썸네일(그리드 카드의 그림)이다. 누른 카드가 그대로 첫 장이 되고, 정보와 내용은 그다음 장부터 나온다.
@@ -311,6 +311,7 @@
   document.querySelectorAll('.cell').forEach(a => a.addEventListener('click', e => {
     const p = byId((a.getAttribute('href') || '').slice(1));
     if (!p) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault(); open(p, a.querySelector('.ph'));
   }));
   const seeFull = document.getElementById('hovL');
@@ -322,7 +323,7 @@
     open(p, cell ? cell.querySelector('.ph') : seeFull);
   });
   window.__viewer = {
-    open: id => open(byId(id), document.querySelector(`.cell[href="#${id}"] .ph`)), close, go,
+    open: (id, origin) => open(byId(id), origin || document.querySelector(`.cell[href="#${id}"] .ph`)), close, go,
     preview(id, p) {                                     // 점검용: 열리는 장면을 진행도 p(0~1)에서 멈춰 보여 준다
       prepare(byId(id), document.querySelector(`.cell[href="#${id}"] .ph`));
       room.style.filter = p > 0 && p < 1 ? 'url(#vWarp)' : '';
@@ -331,3 +332,6 @@
     }
   };
 })();
+if (location.protocol === 'http:' || location.protocol === 'https:') {
+  import('./viewer3d.js').catch(() => {});
+}
