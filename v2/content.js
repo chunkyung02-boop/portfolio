@@ -118,7 +118,7 @@ window.PORTFOLIO = {
     oneLine: "요리하는 동안 손을 쓸 수 없는 사람에게, 재료 확인부터 조리까지 말로 안내하는 AI 요리 코치",
     period: "2026.10.16 ~ 11.02",
     team: "팀 2명",
-    role: "AI 활용 개발, 평가 설계, 발표 제작",
+    role: "재료 판정, 음성·화면 개선, 평가 데이터, 모델 선정",
     tags: ["VLM", "LLM", "FastAPI", "프롬프트 버전 관리"],
     keywords: ["평가 설계", "모델 선정", "비용 절감"],
     built: "재료 판정, 대체 재료 안내, 조리 단계 진행을 로컬 모델 우선 구조로 구현해 말로 진행하는 요리 안내 서비스를 완성",
@@ -142,7 +142,7 @@ window.PORTFOLIO = {
     oneLine: "닮은 캐릭터가 많아 이름을 찾기 어려운 문제를, 사진 한 장으로 68종을 판별해 해결",
     period: "2026.09.09 ~ 09.30",
     team: "팀 2명",
-    role: "AI 활용 개발, 디자인",
+    role: "모델 선정·학습·평가 주도, 자동 재학습, 디자인",
     tags: ["PyTorch", "SigLIP2", "Docker", "Supabase"],
     keywords: ["데이터 수집", "모델 학습", "재학습 자동화"],
     built: "데이터 수집부터 학습, 서버, 배포, 재학습 자동화까지 한 흐름으로 구현해 실제 쓸 수 있는 판별 서비스를 완성",
@@ -172,7 +172,7 @@ window.PORTFOLIO = {
       oneLine: "조건을 매번 입력해야 하는 여가 추천의 불편을, 취향을 읽어 코스를 짜 주는 웹앱으로 해결",
       period: "2026.08 ~ 09.19",
       team: "팀 3명",
-      role: "프론트엔드, 취향 분석 연동",
+      role: "기획, UI/UX",
       tags: ["React", "TypeScript", "PWA", "TMAP"],
       keywords: ["프론트엔드", "취향 분석", "배포 운영"],
       built: "사진과 유튜브 기록으로 취향을 읽고 실제 도보 경로로 연결하는 마포구 여가 코스 추천 웹앱을 배포",
@@ -216,11 +216,11 @@ window.PORTFOLIO = {
   /* ---------- 이력 ---------- */
   career: [
     { period: "2026 ~", title: "POTENUP AI 4기", desc: "AI 에이전트 트랙. Kucanto · 티니핑 판별기 · NOLDA 프로젝트." },
-    { period: "2024 – 2026", title: "CG 합성", desc: "CG 공부와 합성 작업 2년. Rookie Awards 2026 Rank A." },
-    { period: "2024", title: "패션 브랜드 인턴", desc: "" },
-    { period: "2024", title: "광고 영업·마케팅 인턴", desc: "" },
+    { period: "2024 – 2026", title: "CG 합성", desc: "CG 공부와 합성 작업 2년. 한 장면의 빛과 경계를 끝까지 맞추는 습관이 지금의 결과물 검증으로 이어졌습니다. Rookie Awards 2026 Rank A." },
+    { period: "2024", title: "패션 브랜드 인턴", desc: "브랜드 현장에서 고객을 직접 만났습니다." },
+    { period: "2024", title: "광고 영업·마케팅 인턴", desc: "영업·마케팅 현장에서 고객을 직접 만났습니다." },
     { period: "2022 – 2024", title: "군 복무", desc: "" },
-    { period: "2021 – 2022", title: "패션 브랜드 오프라인 매장 관리", desc: "" }
+    { period: "2021 – 2022", title: "패션 브랜드 오프라인 매장 관리", desc: "고객이 어디서 망설이는지 가장 가까이에서 봤습니다. 지금의 VOC 분석으로 이어졌습니다." }
   ],
   skills: [
     { group: "AI 제작", items: ["Claude Code", "프롬프트 설계", "평가 기준 설계", "RAG"] },
