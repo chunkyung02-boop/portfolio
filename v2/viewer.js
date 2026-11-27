@@ -44,6 +44,7 @@
         ${has(pg.text) ? `<p>${esc(pg.text)}</p>` : ''}
         ${has(pg.rows) ? `<dl>${pg.rows.map(r => `<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl>` : ''}
         ${has(pg.nums) ? `<div class="vp-nums">${pg.nums.map(r => `<div><b>${esc(r.value)}</b><span>${esc(r.label)}</span></div>`).join('')}</div>` : ''}
+        ${has(pg.links) ? `<div class="vp-links">${pg.links.map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join('')}</div>` : ''}
         ${has(pg.hint) && D.draft ? `<p class="vp-hint">작성 안내: ${esc(pg.hint)}</p>` : ''}
       </div>`;
     const img = has(pg.image) ? `<figure class="vp-img"><img src="${esc(pg.image)}" alt="${esc(pg.title)}"></figure>` : '';

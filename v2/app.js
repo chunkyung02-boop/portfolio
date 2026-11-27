@@ -1,10 +1,9 @@
 // MONO 공개 시 이 항목에 cover(이미지 경로), oneLine(소개), links를 입력합니다.
 const mono = {id:'mono', title:'MONO', status:'개발 중 · TRA 구현 완료', period:'2026.11 – 진행 중', team:'1인 프로젝트', role:'기획, 대시보드 UI/UX, 트렌드 리서치 에이전트(TRA) 구현', tags:['AI Agent','트렌드 리서치','모델 비교','비용 절감'], cover:'', oneLine:'트렌드 리서치부터 기획전 초안과 검수까지 잇는 패션 이커머스 AI MD 에이전트', links:[], results:[{value:'약 1/8',label:'정제 모델 비용 · 정확도가 거의 같은(색상 87~88%, 질감 58~60%) 모델을 골라 Sol 대비 절감'},{value:'0.19 vs 0.76 USD',label:'리포트 1건 비용 · 에이전트 1명 구조 vs 조사 worker 7명 구조 (각 1회 실행)'},{value:'0 / 82',label:'리포트 숫자 중 도구 결과에 없는 숫자 (에이전트 1명 구조, 1회)'}]};
 const data = window.PORTFOLIO;
-const supra = {id:'supra',title:'SUPRA',status:'MVP 기획',oneLine:'업무 기록에서 비슷한 과거 결정을 찾아 인수인계를 돕는 AI 업무 파트너',role:'개인 · 기획 및 개발',tags:['Next.js','Supabase','임베딩 검색'],cover:'assets/supra.svg'};
 const visual = {id:'visual',title:'CG Compositing',cover:data.visual.image,oneLine:data.visual.desc,improved:Object.values(data.visual.award).join(' · '),image:data.visual.awardImage,links:data.visual.links};
 const covers = {kucanto:'assets/01.webp',tiniping:'assets/tiniping_mockup.webp',nolda:'assets/nolda_mockup.webp','design-editor':'assets/editor.webp'};
-const projects = [mono,...data.subs,...data.others,supra,visual];
+const projects = [mono,...data.subs,...data.others,visual];
 const byId = Object.fromEntries(projects.map(p=>[p.id,p]));
 const $ = s => document.querySelector(s);
 const escape = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -21,7 +20,7 @@ function chips(items=[]) {return '<div class="chips">'+items.map(x=>'<span>'+esc
 function row(title,desc){return '<div class="row"><b>'+escape(title)+'</b><p>'+escape(desc)+'</p></div>'}
 function label(p){return p.status || p.tags?.slice(0,3).join(' · ') || data.visual.award.name}
 if ($('#projects')) {
-$('#projects').innerHTML=projects.filter(p=>['supra','visual'].includes(p.id)).map(p=>'<button class="entry" data-id="'+escape(p.id)+'"><span class="figure">'+artwork(p)+'</span><span class="caption">'+escape(p.title)+'<span aria-hidden="true">↗</span></span><small>'+escape(label(p))+'</small></button>').join('');
+$('#projects').innerHTML=projects.filter(p=>['design-editor','visual'].includes(p.id)).map(p=>'<button class="entry" data-id="'+escape(p.id)+'"><span class="figure">'+artwork(p)+'</span><span class="caption">'+escape(p.title)+'<span aria-hidden="true">↗</span></span><small>'+escape(label(p))+'</small></button>').join('');
 $('#statement').textContent=data.about.statement;
 $('#career').innerHTML=data.career.map(x=>'<div class="row"><b><span class="'+(/^2026\s*~/.test(x.period)?'career-current':'')+'">'+escape(x.period)+'</span> · '+escape(x.title)+'</b><p>'+escape(x.desc)+'</p></div>').join('');
 $('#edu').innerHTML=data.education.map(x=>'<div class="row"><b>'+escape(x.period)+' · '+escape(x.title)+'</b><p>'+escape(x.desc)+(x.url?'<a class="verify" href="'+escape(x.url)+'" target="_blank" rel="noopener">확인 ↗</a>':'')+'</p></div>').join('');
@@ -32,8 +31,13 @@ $('#mail').href='mailto:'+data.contact.email;
 $('#links').innerHTML=links(data.contact.links);
 }
 function renderProject(p){
+  const pages=window.PORTFOLIO_CASES[p.id];
+  if(pages){
+    $('#detail').innerHTML='<h1>'+escape(p.title)+'</h1>'+pages.map(pg=>'<section class="case-detail"><h2>'+escape(pg.title)+'</h2><p>'+escape(pg.lead)+'</p>'+(pg.image?'<img class="evidence" src="'+escape(pg.image)+'" alt="'+escape(pg.title)+'">':'')+(pg.rows||[]).map(r=>row(r[0],r[1])).join('')+'<div class="links">'+links(pg.links)+'</div></section>').join('');
+    return;
+  }
   const sourceLinks=[...(p.links||[])];
-  if(['tiniping','supra','nolda'].includes(p.id))sourceLinks.push({label:'상세 기록',url:'https://chunkyung02-boop.github.io/portfolio/project.html?id='+p.id});
+  if(['tiniping','nolda'].includes(p.id))sourceLinks.push({label:'상세 기록',url:'https://chunkyung02-boop.github.io/portfolio/project.html?id='+p.id});
   const sections=[];
   if(p.period || p.role)sections.push(row([p.period,p.team].filter(Boolean).join(' · '),p.role));
   if(p.id==='mono'){
@@ -156,15 +160,9 @@ function dock(){
 let pending=false;
 function sync(){if(!pending){pending=true;requestAnimationFrame(()=>{pending=false;dock()})}}
 addEventListener('scroll',sync,{passive:true});addEventListener('resize',sync);dock();playback();
-const workCovers={mono:'assets/mono_campaign.webp',kucanto:'assets/kucanto_mockup.webp',tiniping:'assets/tiniping_mockup.webp',nolda:'assets/nolda_mockup.webp','design-editor':'assets/editor.webp'};
-const mainProject={
-  ...mono,
-  chapters:[
-    {name:'트렌드 리서치',body:'후보와 선별 근거를 정리하고 MD가 선택한 트렌드를 기획 단계로 넘깁니다.',image:'assets/mono_trend.webp'},
-    {name:'기획전 초안',body:'승인된 트렌드와 MD 조건으로 상품 후보와 카피를 구성합니다. 최종 승인은 담당자가 맡습니다.',image:workCovers.mono}
-  ]
-};
-window.portfolioViewerProjects=[mainProject,...data.subs,...data.others].map(p=>({...p,viewerCover:workCovers[p.id]}));
+window.portfolioViewerProjects=[mono,...data.subs,...data.others].map(p=>({
+  ...p, viewerCover:window.PORTFOLIO_COVERS[p.id], pages:window.PORTFOLIO_CASES[p.id]
+}));
 function projectCell(p,kind){
   return '<a class="cell" href="#'+p.id+'"><span class="ph"><img src="'+p.viewerCover+'" alt=""></span><span class="ct"><i>'+kind+'</i>'+escape(p.title)+'</span><span class="cs">'+escape(p.period||p.status)+'</span></a>';
 }

@@ -20,7 +20,7 @@
                    nums: [{ value: "91.2%", label: "설명" }], image: "assets/파일.jpg" }
      예) pages: [{ title: "Overview", lead: "...", image: "assets/main_01.jpg" }, { title: "Problem", ... }] */
 window.PORTFOLIO = {
-  draft: true,
+  draft: false,
 
   /* ---------- 기본 정보 ---------- */
   name: "Kyungmin Jeon",

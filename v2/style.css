@@ -224,3 +224,5 @@ p,dd,small{text-wrap:pretty}
 @media(max-width:700px){.code-badges img{height:1.7em;width:1.7em}.dock-copy{top:49%;height:48%}}
 
 .screen{background:radial-gradient(#a18cf020 1px,transparent 1px) 0 0/16px 16px,#101010}#reel{background:none}
+
+.case-detail{padding:clamp(24px,5vw,62px) 0;border-bottom:1px solid #555}.case-detail .evidence{margin:1em auto;display:block;max-height:68vh;object-fit:contain}.case-detail h2{margin-top:0}

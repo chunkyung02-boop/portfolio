@@ -76,3 +76,5 @@ html.v-open{overscroll-behavior:none}
 #viewer .vp {padding:0}
 #viewer .vp-img img {display:block;max-width:100%}
 #viewer .vp-txt dl,#viewer .vp-txt dd {margin-left:0}
+
+.vp-links{display:flex;flex-wrap:wrap;gap:.55em 1.2em;margin-top:1em}.vp-links a{color:inherit;text-decoration:underline;text-underline-offset:4px}
